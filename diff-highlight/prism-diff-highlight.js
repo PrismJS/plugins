@@ -8,17 +8,17 @@
 	const LANGUAGE_REGEX = /^diff-([\w-]+)/i;
 	const HTML_TAG = /<\/?(?!\d)[^\s>\/=$<%]+(?:\s(?:\s*[^\s>\/=]+(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s'">=]+(?=[\s>]))|(?=[\s/>])))+)?\s*\/?>/g;
 	//this will match a line plus the line break while ignoring the line breaks HTML tags may contain.
-	const HTML_LINE = RegExp(/(?:__|[^\r\n<])*(?:\r\n?|\n|(?:__|[^\r\n<])(?![^\r\n]))/.source.replace(/__/g, function () { return HTML_TAG.source; }), 'gi');
+	const HTML_LINE = RegExp(/(?:__|[^\r\n<])*(?:\r\n?|\n|(?:__|[^\r\n<])(?![^\r\n]))/.source.replace(/__/g, () => HTML_TAG.source), 'gi');
 
 	var warningLogged = false;
 
-	Prism.hooks.add('before-sanity-check', function (env) {
+	Prism.hooks.add('before-sanity-check', (env) => {
 		const lang = env.language;
 		if (LANGUAGE_REGEX.test(lang) && !env.grammar) {
 			env.grammar = Prism.languages[lang] = Prism.languages.diff;
 		}
 	});
-	Prism.hooks.add('before-tokenize', function (env) {
+	Prism.hooks.add('before-tokenize', (env) => {
 		if (!warningLogged && !Prism.languages.diff && !Prism.plugins.autoloader) {
 			warningLogged = true;
 			console.warn("Prism's Diff Highlight plugin requires the Diff language definition (prism-diff.js)." +
@@ -31,8 +31,8 @@
 		}
 	});
 
-	Prism.hooks.add('wrap', function (env) {
-		var diffLanguage; var diffGrammar;
+	Prism.hooks.add('wrap', (env) => {
+		let diffLanguage; let diffGrammar;
 
 		if (env.language !== 'diff') {
 			const langMatch = LANGUAGE_REGEX.exec(env.language);
