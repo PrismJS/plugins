@@ -9,15 +9,15 @@
 		Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
 	}
 
-	var script = Prism.util.currentScript();
+	const script = Prism.util.currentScript();
 
 
 	/**
 	 * @type {Array<(element: HTMLElement) => boolean>}
 	 */
-	var filters = [];
+	const filters = [];
 
-	var config = Prism.plugins.filterHighlightAll = {
+	const config = Prism.plugins.filterHighlightAll = {
 
 		/**
 		 * Adds a new filter for the elements of `highlightAll` and `highlightAllUnder` such that only elements for

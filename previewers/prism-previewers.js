@@ -4,14 +4,14 @@
 		return;
 	}
 
-	var previewers = {
+	const previewers = {
 		// gradient must be defined before color and angle
 		'gradient': {
 			create: (function () {
 
 				// Stores already processed gradients so that we don't
 				// make the conversion every time the previewer is shown
-				var cache = {};
+				const cache = {};
 
 				/**
 				 * Returns a W3C-valid linear gradient
@@ -20,7 +20,7 @@
 				 * @param {string} func Gradient function name ("linear-gradient")
 				 * @param {string[]} values Array of the gradient function parameters (["0deg", "red 0%", "blue 100%"])
 				 */
-				var convertToW3CLinearGradient = function (prefix, func, values) {
+				const convertToW3CLinearGradient = function (prefix, func, values) {
 					// Default value for angle
 					var angle = '180deg';
 
@@ -70,7 +70,7 @@
 				 * @param {string} func Gradient function name ("linear-gradient")
 				 * @param {string[]} values Array of the gradient function parameters (["0deg", "red 0%", "blue 100%"])
 				 */
-				var convertToW3CRadialGradient = function (prefix, func, values) {
+				const convertToW3CRadialGradient = function (prefix, func, values) {
 					if (values[0].indexOf('at') < 0) {
 						// Looks like old syntax
 
@@ -86,7 +86,7 @@
 						}
 						if (/\b(?:circle|closest|contain|cover|ellipse|farthest)\b/.test(values[0])) {
 							// Found a shape and/or size
-							var shapeSizeParts = values.shift().split(/\s+/);
+							const shapeSizeParts = values.shift().split(/\s+/);
 							if (shapeSizeParts[0] && (shapeSizeParts[0] === 'circle' || shapeSizeParts[0] === 'ellipse')) {
 								shape = shapeSizeParts.shift();
 							}
@@ -113,17 +113,17 @@
 				 *
 				 * @param {string} gradient The CSS gradient
 				 */
-				var convertToW3CGradient = function (gradient) {
+				const convertToW3CGradient = function (gradient) {
 					if (cache[gradient]) {
 						return cache[gradient];
 					}
-					var parts = gradient.match(/^(\b|\B-[a-z]{1,10}-)((?:repeating-)?(?:linear|radial)-gradient)/);
+					const parts = gradient.match(/^(\b|\B-[a-z]{1,10}-)((?:repeating-)?(?:linear|radial)-gradient)/);
 					// "", "-moz-", etc.
-					var prefix = parts && parts[1];
+					const prefix = parts && parts[1];
 					// "linear-gradient", "radial-gradient", etc.
-					var func = parts && parts[2];
+					const func = parts && parts[2];
 
-					var values = gradient.replace(/^(?:\b|\B-[a-z]{1,10}-)(?:repeating-)?(?:linear|radial)-gradient\(|\)$/g, '').split(/\s*,\s*/);
+					const values = gradient.replace(/^(?:\b|\B-[a-z]{1,10}-)(?:repeating-)?(?:linear|radial)-gradient\(|\)$/g, '').split(/\s*,\s*/);
 
 					if (func.indexOf('linear') >= 0) {
 						return cache[gradient] = convertToW3CLinearGradient(prefix, func, values);
@@ -189,9 +189,9 @@
 		'angle': {
 			create: function () {
 				new Prism.plugins.Previewer('angle', function (value) {
-					var num = parseFloat(value);
-					var unit = value.match(/[a-z]+$/i);
-					var max; var percentage;
+					const num = parseFloat(value);
+					let unit = value.match(/[a-z]+$/i);
+					let max; let percentage;
 					if (!num || !unit) {
 						return false;
 					}
@@ -335,7 +335,7 @@
 
 						this.querySelector('path').setAttribute('d', 'M0,100 C' + p[0] + ',' + p[1] + ', ' + p[2] + ',' + p[3] + ', 100,0');
 
-						var lines = this.querySelectorAll('line');
+						const lines = this.querySelectorAll('line');
 						lines[0].setAttribute('x2', p[0]);
 						lines[0].setAttribute('y2', p[1]);
 						lines[1].setAttribute('x2', p[2]);
@@ -404,8 +404,8 @@
 		'time': {
 			create: function () {
 				new Prism.plugins.Previewer('time', function (value) {
-					var num = parseFloat(value);
-					var unit = value.match(/[a-z]+$/i);
+					const num = parseFloat(value);
+					let unit = value.match(/[a-z]+$/i);
 					if (!num || !unit) {
 						return false;
 					}
@@ -468,11 +468,11 @@
 	 * @param {HTMLElement} element
 	 * @returns {{top: number, right: number, bottom: number, left: number, width: number, height: number}}
 	 */
-	var getOffset = function (element) {
-		var elementBounds = element.getBoundingClientRect();
-		var left = elementBounds.left;
-		var top = elementBounds.top;
-		var documentBounds = document.documentElement.getBoundingClientRect();
+	const getOffset = function (element) {
+		const elementBounds = element.getBoundingClientRect();
+		let left = elementBounds.left;
+		let top = elementBounds.top;
+		const documentBounds = document.documentElement.getBoundingClientRect();
 		left -= documentBounds.left;
 		top -= documentBounds.top;
 
@@ -486,9 +486,9 @@
 		};
 	};
 
-	var TOKEN_CLASS = 'token';
-	var ACTIVE_CLASS = 'active';
-	var FLIPPED_CLASS = 'flipped';
+	const TOKEN_CLASS = 'token';
+	const ACTIVE_CLASS = 'active';
+	const FLIPPED_CLASS = 'flipped';
 
 	/**
 	 * Previewer constructor
@@ -507,7 +507,7 @@
 		this._mouseout = this.mouseout.bind(this);
 		this.initializer = initializer;
 
-		var self = this;
+		const self = this;
 
 		if (!supportedLanguages) {
 			supportedLanguages = ['*'];
@@ -551,7 +551,7 @@
 	Previewer.prototype.isDisabled = function (token) {
 		do {
 			if (token.hasAttribute && token.hasAttribute('data-previewers')) {
-				var previewers = token.getAttribute('data-previewers');
+				const previewers = token.getAttribute('data-previewers');
 				return (previewers || '').split(/\s+/).indexOf(this._type) === -1;
 			}
 		} while ((token = token.parentNode));
@@ -602,7 +602,7 @@
 		if (this.updater.call(this._elt, this._token.textContent)) {
 			this._token.addEventListener('mouseout', this._mouseout, false);
 
-			var offset = getOffset(this._token);
+			const offset = getOffset(this._token);
 			this._elt.classList.add(ACTIVE_CLASS);
 
 			if (offset.top - this._elt.offsetHeight > 0) {
@@ -657,7 +657,7 @@
 			previewers = previewers.concat(Previewer.byLanguages['*']);
 		}
 		elt.addEventListener('mouseover', function (e) {
-			var target = e.target;
+			const target = e.target;
 			previewers.forEach(function (previewer) {
 				previewer.check(target);
 			});
@@ -705,7 +705,7 @@
 		}
 	});
 
-	for (var previewer in previewers) {
+	for (const previewer in previewers) {
 		previewers[previewer].create();
 	}
 
