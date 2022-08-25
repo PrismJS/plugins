@@ -4,8 +4,8 @@
 		return;
 	}
 
-	var assign = Object.assign || function (obj1, obj2) {
-		for (var name in obj2) {
+	const assign = Object.assign || function (obj1, obj2) {
+		for (const name in obj2) {
 			if (obj2.hasOwnProperty(name)) {
 				obj1[name] = obj2[name];
 			}
@@ -33,7 +33,7 @@
 		return str.length + res;
 	}
 
-	var settingsConfig = {
+	const settingsConfig = {
 		'remove-trailing': 'boolean',
 		'remove-indent': 'boolean',
 		'left-trim': 'boolean',
@@ -52,8 +52,8 @@
 		normalize: function (input, settings) {
 			settings = assign(this.defaults, settings);
 
-			for (var name in settings) {
-				var methodName = toCamelCase(name);
+			for (const name in settings) {
+				const methodName = toCamelCase(name);
 				if (name !== 'normalize' && methodName !== 'setDefaults' &&
 					settings[name] && this[methodName]) {
 					input = this[methodName].call(this, input, settings[name]);
@@ -88,7 +88,7 @@
 			return input.replace(/^(?:\r?\n|\r)/, '');
 		},
 		removeIndent: function (input) {
-			var indents = input.match(/^[^\S\n\r]*(?=\S)/gm);
+			const indents = input.match(/^[^\S\n\r]*(?=\S)/gm);
 
 			if (!indents || !indents[0].length) {
 				return input;
@@ -108,17 +108,17 @@
 		breakLines: function (input, characters) {
 			characters = (characters === true) ? 80 : characters|0 || 80;
 
-			var lines = input.split('\n');
-			for (var i = 0; i < lines.length; ++i) {
+			const lines = input.split('\n');
+			for (let i = 0; i < lines.length; ++i) {
 				if (tabLen(lines[i]) <= characters) {
 					continue;
 				}
 
-				var line = lines[i].split(/(\s+)/g);
-				var len = 0;
+				const line = lines[i].split(/(\s+)/g);
+				let len = 0;
 
-				for (var j = 0; j < line.length; ++j) {
-					var tl = tabLen(line[j]);
+				for (let j = 0; j < line.length; ++j) {
+					const tl = tabLen(line[j]);
 					len += tl;
 					if (len > characters) {
 						line[j] = '\n' + line[j];
@@ -149,7 +149,7 @@
 	});
 
 	Prism.hooks.add('before-sanity-check', function (env) {
-		var Normalizer = Prism.plugins.NormalizeWhitespace;
+		const Normalizer = Prism.plugins.NormalizeWhitespace;
 
 		// Check settings
 		if (env.settings && env.settings['whitespace-normalization'] === false) {
@@ -168,7 +168,7 @@
 		}
 
 		// Normal mode
-		var pre = env.element.parentNode;
+		const pre = env.element.parentNode;
 		if (!env.code || !pre || pre.nodeName.toLowerCase() !== 'pre') {
 			return;
 		}
@@ -176,12 +176,12 @@
 		if (env.settings == null) { env.settings = {}; }
 
 		// Read settings from 'data-' attributes
-		for (var key in settingsConfig) {
+		for (const key in settingsConfig) {
 			if (Object.hasOwnProperty.call(settingsConfig, key)) {
-				var settingType = settingsConfig[key];
+				const settingType = settingsConfig[key];
 				if (pre.hasAttribute('data-' + key)) {
 					try {
-						var value = JSON.parse(pre.getAttribute('data-' + key) || 'true');
+						const value = JSON.parse(pre.getAttribute('data-' + key) || 'true');
 						if (typeof value === settingType) {
 							env.settings[key] = value;
 						}
@@ -192,14 +192,14 @@
 			}
 		}
 
-		var children = pre.childNodes;
-		var before = '';
-		var after = '';
-		var codeFound = false;
+		const children = pre.childNodes;
+		let before = '';
+		let after = '';
+		let codeFound = false;
 
 		// Move surrounding whitespace from the <pre> tag into the <code> tag
-		for (var i = 0; i < children.length; ++i) {
-			var node = children[i];
+		for (let i = 0; i < children.length; ++i) {
+			const node = children[i];
 
 			if (node == env.element) {
 				codeFound = true;
@@ -220,7 +220,7 @@
 			env.code = Normalizer.normalize(env.code, env.settings);
 		} else {
 			// Preserve markup for keep-markup plugin
-			var html = before + env.element.innerHTML + after;
+			const html = before + env.element.innerHTML + after;
 			env.element.innerHTML = Normalizer.normalize(html, env.settings);
 			env.code = env.element.textContent;
 		}

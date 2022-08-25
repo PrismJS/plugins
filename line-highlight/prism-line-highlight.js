@@ -4,9 +4,9 @@
 		return;
 	}
 
-	var LINE_NUMBERS_CLASS = 'line-numbers';
-	var LINKABLE_LINE_NUMBERS_CLASS = 'linkable-line-numbers';
-	var NEW_LINE_EXP = /\n(?!$)/g;
+	const LINE_NUMBERS_CLASS = 'line-numbers';
+	const LINKABLE_LINE_NUMBERS_CLASS = 'linkable-line-numbers';
+	const NEW_LINE_EXP = /\n(?!$)/g;
 
 	/**
 	 * @param {string} selector
@@ -40,11 +40,11 @@
 
 	// Some browsers round the line-height, others don't.
 	// We need to test for it to position the elements properly.
-	var isLineHeightRounded = (function () {
-		var res;
+	const isLineHeightRounded = (function () {
+		let res;
 		return function () {
 			if (typeof res === 'undefined') {
-				var d = document.createElement('div');
+				const d = document.createElement('div');
 				d.style.fontSize = '13px';
 				d.style.lineHeight = '1.5';
 				d.style.padding = '0';
@@ -67,8 +67,8 @@
 	 * @param {HTMLElement} child
 	 */
 	function getContentBoxTopOffset(parent, child) {
-		var parentStyle = getComputedStyle(parent);
-		var childStyle = getComputedStyle(child);
+		const parentStyle = getComputedStyle(parent);
+		const childStyle = getComputedStyle(child);
 
 		/**
 		 * Returns the numeric value of the given pixel value.
@@ -128,17 +128,17 @@
 		highlightLines: function highlightLines(pre, lines, classes) {
 			lines = typeof lines === 'string' ? lines : (pre.getAttribute('data-line') || '');
 
-			var ranges = lines.replace(/\s+/g, '').split(',').filter(Boolean);
-			var offset = +pre.getAttribute('data-line-offset') || 0;
+			const ranges = lines.replace(/\s+/g, '').split(',').filter(Boolean);
+			const offset = +pre.getAttribute('data-line-offset') || 0;
 
-			var parseMethod = isLineHeightRounded() ? parseInt : parseFloat;
-			var lineHeight = parseMethod(getComputedStyle(pre).lineHeight);
-			var hasLineNumbers = Prism.util.isActive(pre, LINE_NUMBERS_CLASS);
-			var codeElement = pre.querySelector('code');
-			var parentElement = hasLineNumbers ? pre : codeElement || pre;
-			var mutateActions = /** @type {(() => void)[]} */ ([]);
-			var lineBreakMatch = codeElement.textContent.match(NEW_LINE_EXP);
-			var numberOfLines = lineBreakMatch ? lineBreakMatch.length + 1 : 1;
+			const parseMethod = isLineHeightRounded() ? parseInt : parseFloat;
+			const lineHeight = parseMethod(getComputedStyle(pre).lineHeight);
+			const hasLineNumbers = Prism.util.isActive(pre, LINE_NUMBERS_CLASS);
+			const codeElement = pre.querySelector('code');
+			const parentElement = hasLineNumbers ? pre : codeElement || pre;
+			const mutateActions = /** @type {(() => void)[]} */ ([]);
+			const lineBreakMatch = codeElement.textContent.match(NEW_LINE_EXP);
+			const numberOfLines = lineBreakMatch ? lineBreakMatch.length + 1 : 1;
 			/**
 			 * The top offset between the content box of the <code> element and the content box of the parent element of
 			 * the line highlight element (either `<pre>` or `<code>`).
@@ -149,13 +149,13 @@
 			 *
 			 * This offset will be 0 if the parent element of the line highlight element is the `<code>` element.
 			 */
-			var codePreOffset = !codeElement || parentElement == codeElement ? 0 : getContentBoxTopOffset(pre, codeElement);
+			const codePreOffset = !codeElement || parentElement == codeElement ? 0 : getContentBoxTopOffset(pre, codeElement);
 
 			ranges.forEach(function (currentRange) {
-				var range = currentRange.split('-');
+				const range = currentRange.split('-');
 
-				var start = +range[0];
-				var end = +range[1] || start;
+				const start = +range[0];
+				let end = +range[1] || start;
 				end = Math.min(numberOfLines + offset, end);
 
 				if (end < start) {
@@ -163,7 +163,7 @@
 				}
 
 				/** @type {HTMLElement} */
-				var line = pre.querySelector('.line-highlight[data-range="' + currentRange + '"]') || document.createElement('div');
+				const line = pre.querySelector('.line-highlight[data-range="' + currentRange + '"]') || document.createElement('div');
 
 				mutateActions.push(function () {
 					line.setAttribute('aria-hidden', 'true');
@@ -173,18 +173,18 @@
 
 				// if the line-numbers plugin is enabled, then there is no reason for this plugin to display the line numbers
 				if (hasLineNumbers && Prism.plugins.lineNumbers) {
-					var startNode = Prism.plugins.lineNumbers.getLine(pre, start);
-					var endNode = Prism.plugins.lineNumbers.getLine(pre, end);
+					const startNode = Prism.plugins.lineNumbers.getLine(pre, start);
+					const endNode = Prism.plugins.lineNumbers.getLine(pre, end);
 
 					if (startNode) {
-						var top = startNode.offsetTop + codePreOffset + 'px';
+						const top = startNode.offsetTop + codePreOffset + 'px';
 						mutateActions.push(function () {
 							line.style.top = top;
 						});
 					}
 
 					if (endNode) {
-						var height = (endNode.offsetTop - startNode.offsetTop) + endNode.offsetHeight + 'px';
+						const height = (endNode.offsetTop - startNode.offsetTop) + endNode.offsetHeight + 'px';
 						mutateActions.push(function () {
 							line.style.height = height;
 						});
@@ -214,7 +214,7 @@
 				});
 			});
 
-			var id = pre.id;
+			const id = pre.id;
 			if (hasLineNumbers && Prism.util.isActive(pre, LINKABLE_LINE_NUMBERS_CLASS) && id) {
 				// This implements linkable line numbers. Linkable line numbers use Line Highlight to create a link to a
 				// specific line. For this to work, the pre element has to:
@@ -229,13 +229,13 @@
 					});
 				}
 
-				var start = parseInt(pre.getAttribute('data-start') || '1');
+				const start = parseInt(pre.getAttribute('data-start') || '1');
 
 				// iterate all line number spans
 				$$('.line-numbers-rows > span', pre).forEach(function (lineSpan, i) {
-					var lineNumber = i + start;
+					const lineNumber = i + start;
 					lineSpan.onclick = function () {
-						var hash = id + '.' + lineNumber;
+						const hash = id + '.' + lineNumber;
 
 						// this will prevent scrolling since the span is obviously in view
 						scrollIntoView = false;
@@ -255,21 +255,21 @@
 
 
 	function applyHash() {
-		var hash = location.hash.slice(1);
+		const hash = location.hash.slice(1);
 
 		// Remove pre-existing temporary lines
 		$$('.temporary.line-highlight').forEach(function (line) {
 			line.parentNode.removeChild(line);
 		});
 
-		var range = (hash.match(/\.([\d,-]+)$/) || [, ''])[1];
+		const range = (hash.match(/\.([\d,-]+)$/) || [, ''])[1];
 
 		if (!range || document.getElementById(hash)) {
 			return;
 		}
 
-		var id = hash.slice(0, hash.lastIndexOf('.'));
-		var pre = document.getElementById(id);
+		const id = hash.slice(0, hash.lastIndexOf('.'));
+		const pre = document.getElementById(id);
 
 		if (!pre) {
 			return;
@@ -279,7 +279,7 @@
 			pre.setAttribute('data-line', '');
 		}
 
-		var mutateDom = Prism.plugins.lineHighlight.highlightLines(pre, range, 'temporary ');
+		const mutateDom = Prism.plugins.lineHighlight.highlightLines(pre, range, 'temporary ');
 		mutateDom();
 
 		if (scrollIntoView) {
@@ -290,7 +290,7 @@
 	var fakeTimer = 0; // Hack to limit the number of times applyHash() runs
 
 	Prism.hooks.add('before-sanity-check', function (env) {
-		var pre = env.element.parentElement;
+		const pre = env.element.parentElement;
 		if (!isActiveFor(pre)) {
 			return;
 		}
@@ -314,20 +314,20 @@
 	});
 
 	Prism.hooks.add('complete', function completeHook(env) {
-		var pre = env.element.parentElement;
+		const pre = env.element.parentElement;
 		if (!isActiveFor(pre)) {
 			return;
 		}
 
 		clearTimeout(fakeTimer);
 
-		var hasLineNumbers = Prism.plugins.lineNumbers;
-		var isLineNumbersLoaded = env.plugins && env.plugins.lineNumbers;
+		const hasLineNumbers = Prism.plugins.lineNumbers;
+		const isLineNumbersLoaded = env.plugins && env.plugins.lineNumbers;
 
 		if (hasClass(pre, LINE_NUMBERS_CLASS) && hasLineNumbers && !isLineNumbersLoaded) {
 			Prism.hooks.add('line-numbers', completeHook);
 		} else {
-			var mutateDom = Prism.plugins.lineHighlight.highlightLines(pre);
+			const mutateDom = Prism.plugins.lineHighlight.highlightLines(pre);
 			mutateDom();
 			fakeTimer = setTimeout(applyHash, 1);
 		}
@@ -335,7 +335,7 @@
 
 	window.addEventListener('hashchange', applyHash);
 	window.addEventListener('resize', function () {
-		var actions = $$('pre')
+		const actions = $$('pre')
 			.filter(isActiveFor)
 			.map(function (pre) {
 				return Prism.plugins.lineHighlight.highlightLines(pre);

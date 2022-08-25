@@ -5,7 +5,7 @@
 	}
 
 	function mapClassName(name) {
-		var customClass = Prism.plugins.customClass;
+		const customClass = Prism.plugins.customClass;
 		if (customClass) {
 			return customClass.apply(name, 'none');
 		} else {
@@ -13,7 +13,7 @@
 		}
 	}
 
-	var PARTNER = {
+	const PARTNER = {
 		'(': ')',
 		'[': ']',
 		'{': '}',
@@ -22,7 +22,7 @@
 	// The names for brace types.
 	// These names have two purposes: 1) they can be used for styling and 2) they are used to pair braces. Only braces
 	// of the same type are paired.
-	var NAMES = {
+	const NAMES = {
 		'(': 'brace-round',
 		'[': 'brace-square',
 		'{': 'brace-curly',
@@ -30,15 +30,15 @@
 
 	// A map for brace aliases.
 	// This is useful for when some braces have a prefix/suffix as part of the punctuation token.
-	var BRACE_ALIAS_MAP = {
+	const BRACE_ALIAS_MAP = {
 		'${': '{', // JS template punctuation (e.g. `foo ${bar + 1}`)
 	};
 
-	var LEVEL_WARP = 12;
+	const LEVEL_WARP = 12;
 
 	var pairIdCounter = 0;
 
-	var BRACE_ID_PATTERN = /^(pair-\d+-)(close|open)$/;
+	const BRACE_ID_PATTERN = /^(pair-\d+-)(close|open)$/;
 
 	/**
 	 * Returns the brace partner given one brace of a brace pair.
@@ -47,7 +47,7 @@
 	 * @returns {HTMLElement}
 	 */
 	function getPartnerBrace(brace) {
-		var match = BRACE_ID_PATTERN.exec(brace.id);
+		const match = BRACE_ID_PATTERN.exec(brace.id);
 		return document.querySelector('#' + match[1] + (match[2] == 'open' ? 'close' : 'open'));
 	}
 
@@ -87,8 +87,8 @@
 	Prism.hooks.add('complete', function (env) {
 
 		/** @type {HTMLElement} */
-		var code = env.element;
-		var pre = code.parentElement;
+		const code = env.element;
+		const pre = code.parentElement;
 
 		if (!pre || pre.tagName != 'PRE') {
 			return;
@@ -96,7 +96,7 @@
 
 		// find the braces to match
 		/** @type {string[]} */
-		var toMatch = [];
+		const toMatch = [];
 		if (Prism.util.isActive(code, 'match-braces')) {
 			toMatch.push('(', '[', '{');
 		}
@@ -110,8 +110,8 @@
 			// code blocks might be highlighted more than once
 			pre.addEventListener('mousedown', function removeBraceSelected() {
 				// the code element might have been replaced
-				var code = pre.querySelector('code');
-				var className = mapClassName('brace-selected');
+				const code = pre.querySelector('code');
+				const className = mapClassName('brace-selected');
 				Array.prototype.slice.call(code.querySelectorAll('.' + className)).forEach(function (e) {
 					e.classList.remove(className);
 				});
@@ -120,24 +120,24 @@
 		}
 
 		/** @type {HTMLSpanElement[]} */
-		var punctuation = Array.prototype.slice.call(
+		const punctuation = Array.prototype.slice.call(
 			code.querySelectorAll('span.' + mapClassName('token') + '.' + mapClassName('punctuation'))
 		);
 
 		/** @type {{ index: number, open: boolean, element: HTMLElement }[]} */
-		var allBraces = [];
+		const allBraces = [];
 
 		toMatch.forEach(function (open) {
-			var close = PARTNER[open];
-			var name = mapClassName(NAMES[open]);
+			const close = PARTNER[open];
+			const name = mapClassName(NAMES[open]);
 
 			/** @type {[number, number][]} */
-			var pairs = [];
+			const pairs = [];
 			/** @type {number[]} */
-			var openStack = [];
+			const openStack = [];
 
-			for (var i = 0; i < punctuation.length; i++) {
-				var element = punctuation[i];
+			for (let i = 0; i < punctuation.length; i++) {
+				const element = punctuation[i];
 				if (element.childElementCount == 0) {
 					var text = element.textContent;
 					text = BRACE_ALIAS_MAP[text] || text;
@@ -158,10 +158,10 @@
 			}
 
 			pairs.forEach(function (pair) {
-				var pairId = 'pair-' + (pairIdCounter++) + '-';
+				const pairId = 'pair-' + (pairIdCounter++) + '-';
 
-				var opening = punctuation[pair[0]];
-				var closing = punctuation[pair[1]];
+				const opening = punctuation[pair[0]];
+				const closing = punctuation[pair[1]];
 
 				opening.id = pairId + 'open';
 				closing.id = pairId + 'close';
