@@ -1,6 +1,7 @@
 import { tokenizeStrings } from '../../shared/tokenize-strings';
+import type { PluginProto } from '../../types';
 
-export default /** @type {import("../../types").PluginProto<'show-invisibles'>} */ ({
+export default {
 	id: 'show-invisibles',
 	optional: ['autolinker', 'data-uri-highlight', 'diff-highlight'],
 	effect(Prism) {
@@ -16,4 +17,4 @@ export default /** @type {import("../../types").PluginProto<'show-invisibles'>} 
 			tokenizeStrings(env.tokens, (code) => Prism.tokenize(code, invisibles));
 		});
 	}
-});
+} as PluginProto<'show-invisibles'>;

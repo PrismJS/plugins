@@ -1,6 +1,7 @@
 import { tokenizeStrings } from '../../shared/tokenize-strings';
+import type { PluginProto } from '../../types';
 
-export default /** @type {import("../../types").PluginProto<'data-uri-highlight'>} */ ({
+export default {
 	id: 'data-uri-highlight',
 	optional: 'diff-highlight',
 	effect(Prism) {
@@ -37,4 +38,4 @@ export default /** @type {import("../../types").PluginProto<'data-uri-highlight'
 			tokenizeStrings(env.tokens, (code) => Prism.tokenize(code, uri));
 		});
 	}
-});
+} as PluginProto<'data-uri-highlight'>;

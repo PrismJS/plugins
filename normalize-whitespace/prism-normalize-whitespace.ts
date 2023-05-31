@@ -1,9 +1,7 @@
 import { getParentPre, isActive } from '../../shared/dom-util';
+import type { PluginProto } from '../../types';
 
-/**
- * @param {string} str
- */
-function tabLength(str) {
+function tabLength(str: string) {
 	let res = 0;
 	for (let i = 0; i < str.length; ++i) {
 		if (str.charCodeAt(i) === '\t'.charCodeAt(0)) {
@@ -13,24 +11,19 @@ function tabLength(str) {
 	return str.length + res;
 }
 
-/**
- * @typedef {{
- *   'break-lines': number,
- *   'indent': number,
- *   'left-trim': boolean,
- *   'remove-indent': boolean,
- *   'remove-initial-line-feed': boolean,
- *   'remove-trailing': boolean,
- *   'right-trim': boolean,
- *   'spaces-to-tabs': number,
- *   'tabs-to-spaces': number,
- * }} NormalizeWhitespaceDefaults
- */
+interface NormalizeWhitespaceDefaults {
+	'break-lines': number;
+	'indent': number;
+	'left-trim': boolean;
+	'remove-indent': boolean;
+	'remove-initial-line-feed': boolean;
+	'remove-trailing': boolean;
+	'right-trim': boolean;
+	'spaces-to-tabs': number;
+	'tabs-to-spaces': number;
+}
 
-/**
- * @type {readonly (keyof NormalizeWhitespaceDefaults)[]}
- */
-const normalizationOrder = [
+const normalizationOrder: readonly (keyof NormalizeWhitespaceDefaults)[] = [
 	'remove-trailing',
 	'remove-indent',
 	'left-trim',
@@ -42,15 +35,9 @@ const normalizationOrder = [
 	'spaces-to-tabs',
 ];
 
-/**
- * @typedef {T extends boolean ? 'boolean' : T extends number ? 'number' : string} Typeof
- * @template T
- */
+type Typeof<T> = T extends boolean ? 'boolean' : T extends number ? 'number' : string;
 
-/**
- * @type {Readonly<{ [K in keyof NormalizeWhitespaceDefaults]: Typeof<NormalizeWhitespaceDefaults[K]> }>}
- */
-const settingsConfig = {
+const settingsConfig: Readonly<{ [K in keyof NormalizeWhitespaceDefaults]: Typeof<NormalizeWhitespaceDefaults[K]> }> = {
 	'remove-trailing': 'boolean',
 	'remove-indent': 'boolean',
 	'left-trim': 'boolean',
@@ -64,21 +51,17 @@ const settingsConfig = {
 
 /**
  * Reads normalizations settings from the given elements's `data-*` attributes.
- *
- * @param {Element} element
- * @returns {Partial<NormalizeWhitespaceDefaults>}
  */
-function readSetting(element) {
-	/** @type {Partial<NormalizeWhitespaceDefaults>} */
-	const settings = {};
+function readSetting(element: Element) {
+	const settings: Partial<NormalizeWhitespaceDefaults> = {};
 	for (const key of normalizationOrder) {
 		const attr = element.getAttribute('data-' + key);
 		const type = settingsConfig[key];
 		if (attr !== null) {
 			try {
-				const value = JSON.parse(attr || 'true');
+				const value: unknown = JSON.parse(attr || 'true');
 				if (typeof value === type) {
-					settings[key] = value;
+					settings[key] = value as never;
 				}
 			} catch {
 				// ignore error
@@ -88,14 +71,11 @@ function readSetting(element) {
 	return settings;
 }
 
-/**
- * @type {{ [K in keyof NormalizeWhitespaceDefaults]: (input: string, value: NormalizeWhitespaceDefaults[K]) => string }}
- */
-const normalizationMethods = {
+const normalizationMethods: { [K in keyof NormalizeWhitespaceDefaults]: (input: string, value: NormalizeWhitespaceDefaults[K]) => string } = {
 	'left-trim': (input) => input.replace(/^\s+/, ''),
 	'right-trim': (input) => input.replace(/(^|\S)\s+$/, '$1'),
 	'tabs-to-spaces': (input, spaces) => input.replace(/\t/g, ' '.repeat(spaces)),
-	'spaces-to-tabs': (input, spaces) => input.replace(RegExp(' {' + spaces + '}', 'g'), '\t'),
+	'spaces-to-tabs': (input, spaces) => input.replace(RegExp(` {${spaces}}`, 'g'), '\t'),
 	'remove-trailing': (input) => input.replace(/\s*?$/gm, ''),
 	'remove-initial-line-feed': (input) => input.replace(/^(?:\r?\n|\r)/, ''),
 	'remove-indent': (input) => {
@@ -121,7 +101,7 @@ const normalizationMethods = {
 				continue;
 			}
 
-			const line = lines[i].split(/(\s+)/g);
+			const line = lines[i].split(/(\s+)/);
 			let len = 0;
 
 			for (let j = 0; j < line.length; ++j) {
@@ -139,34 +119,22 @@ const normalizationMethods = {
 };
 
 export class NormalizeWhitespace {
-	/**
-	 * @param {Partial<Readonly<NormalizeWhitespaceDefaults>>} defaults
-	 */
-	constructor(defaults) {
-		/**
-		 * @type {Partial<NormalizeWhitespaceDefaults>}
-		 */
+	defaults: Partial<NormalizeWhitespaceDefaults>;
+	constructor(defaults: Partial<Readonly<NormalizeWhitespaceDefaults>>) {
 		this.defaults = { ...defaults };
 	}
 
-	/**
-	 * @param {Partial<Readonly<NormalizeWhitespaceDefaults>>} defaults
-	 */
-	setDefaults(defaults) {
+	setDefaults(defaults: Partial<Readonly<NormalizeWhitespaceDefaults>>): void {
 		Object.assign(this.defaults, defaults);
 	}
 
-	/**
-	 * @param {string} input
-	 * @param {Partial<Readonly<NormalizeWhitespaceDefaults>>} [settings]
-	 */
-	normalize(input, settings) {
+	normalize(input: string, settings?: Partial<Readonly<NormalizeWhitespaceDefaults>>): string {
 		settings = { ...this.defaults, ...settings };
 
 		for (const name of normalizationOrder) {
 			const value = settings[name];
 			if (value !== undefined && value !== false) {
-				input = normalizationMethods[name](input, /** @type {never} */ (value));
+				input = normalizationMethods[name](input, value as never);
 			}
 		}
 
@@ -174,7 +142,7 @@ export class NormalizeWhitespace {
 	}
 }
 
-export default /** @type {import("../../types").PluginProto<'normalize-whitespace'>} */ ({
+export default {
 	id: 'normalize-whitespace',
 	optional: 'unescaped-markup',
 	plugin() {
@@ -251,4 +219,4 @@ export default /** @type {import("../../types").PluginProto<'normalize-whitespac
 			}
 		});
 	}
-});
+} as PluginProto<'normalize-whitespace'>;

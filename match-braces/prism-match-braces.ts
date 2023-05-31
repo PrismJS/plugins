@@ -1,13 +1,10 @@
 import { getParentPre, isActive } from '../../shared/dom-util';
+import type { PluginProto } from '../../types';
 
-export default /** @type {import("../../types").PluginProto<'match-braces'>} */ ({
+export default {
 	id: 'match-braces',
 	effect(Prism) {
-		/**
-		 * @param {string} name
-		 * @returns {string}
-		 */
-		function mapClassName(name) {
+		function mapClassName(name: string) {
 			const customClass = Prism.plugins.customClass;
 			if (customClass) {
 				return customClass.apply(name);
@@ -33,8 +30,7 @@ export default /** @type {import("../../types").PluginProto<'match-braces'>} */ 
 
 		// A map for brace aliases.
 		// This is useful for when some braces have a prefix/suffix as part of the punctuation token.
-		/** @type {Readonly<Record<string, string>>} */
-		const BRACE_ALIAS_MAP = {
+		const BRACE_ALIAS_MAP: Readonly<Record<string, string>> = {
 			'${': '{', // JS template punctuation (e.g. `foo ${bar + 1}`)
 		};
 
@@ -46,11 +42,8 @@ export default /** @type {import("../../types").PluginProto<'match-braces'>} */ 
 
 		/**
 		 * Returns the brace partner given one brace of a brace pair.
-		 *
-		 * @param {Element} brace
-		 * @returns {Element | null}
 		 */
-		function getPartnerBrace(brace) {
+		function getPartnerBrace(brace: Element) {
 			const match = BRACE_ID_PATTERN.exec(brace.id);
 			if (!match) {
 				return null;
@@ -58,10 +51,7 @@ export default /** @type {import("../../types").PluginProto<'match-braces'>} */ 
 			return document.querySelector('#' + match[1] + (match[2] === 'open' ? 'close' : 'open'));
 		}
 
-		/**
-		 * @this {Element}
-		 */
-		function hoverBrace() {
+		function hoverBrace(this: Element) {
 			if (!isActive(this, 'brace-hover', true)) {
 				return;
 			}
@@ -75,10 +65,7 @@ export default /** @type {import("../../types").PluginProto<'match-braces'>} */ 
 				e.classList.add(mapClassName('brace-hover'));
 			});
 		}
-		/**
-		 * @this {Element}
-		 */
-		function leaveBrace() {
+		function leaveBrace(this: Element) {
 			const partner = getPartnerBrace(this);
 			if (!partner) {
 				return;
@@ -88,10 +75,7 @@ export default /** @type {import("../../types").PluginProto<'match-braces'>} */ 
 				e.classList.remove(mapClassName('brace-hover'));
 			});
 		}
-		/**
-		 * @this {Element}
-		 */
-		function clickBrace() {
+		function clickBrace(this: Element) {
 			if (!isActive(this, 'brace-select', true)) {
 				return;
 			}
@@ -106,8 +90,7 @@ export default /** @type {import("../../types").PluginProto<'match-braces'>} */ 
 			});
 		}
 
-		/** @type {WeakSet<Element>} */
-		const withEventListener = new WeakSet();
+		const withEventListener = new WeakSet<Element>();
 
 		return Prism.hooks.add('complete', (env) => {
 			const code = env.element;
@@ -118,8 +101,7 @@ export default /** @type {import("../../types").PluginProto<'match-braces'>} */ 
 			}
 
 			// find the braces to match
-			/** @type {(keyof PARTNER)[]} */
-			const toMatch = [];
+			const toMatch: (keyof typeof PARTNER)[] = [];
 			if (isActive(code, 'match-braces')) {
 				toMatch.push('(', '[', '{');
 			}
@@ -144,17 +126,14 @@ export default /** @type {import("../../types").PluginProto<'match-braces'>} */ 
 
 			const punctuation = [...code.querySelectorAll('span.' + mapClassName('token') + '.' + mapClassName('punctuation'))];
 
-			/** @type {{ index: number, open: boolean, element: Element }[]} */
-			const allBraces = [];
+			const allBraces: { index: number, open: boolean, element: Element }[] = [];
 
 			toMatch.forEach((open) => {
 				const close = PARTNER[open];
 				const name = mapClassName(NAMES[open]);
 
-				/** @type {[number, number][]} */
-				const pairs = [];
-				/** @type {number[]} */
-				const openStack = [];
+				const pairs: [number, number][] = [];
+				const openStack: number[] = [];
 
 				for (let i = 0; i < punctuation.length; i++) {
 					const element = punctuation[i];
@@ -179,7 +158,7 @@ export default /** @type {import("../../types").PluginProto<'match-braces'>} */ 
 				}
 
 				pairs.forEach((pair) => {
-					const pairId = 'pair-' + (pairIdCounter++) + '-';
+					const pairId = `pair-${pairIdCounter++}-`;
 
 					const opening = punctuation[pair[0]];
 					const closing = punctuation[pair[1]];
@@ -199,13 +178,13 @@ export default /** @type {import("../../types").PluginProto<'match-braces'>} */ 
 			allBraces.sort((a, b) => a.index - b.index);
 			allBraces.forEach((brace) => {
 				if (brace.open) {
-					brace.element.classList.add(mapClassName('brace-level-' + (level % LEVEL_WARP + 1)));
+					brace.element.classList.add(mapClassName(`brace-level-${level % LEVEL_WARP + 1}`));
 					level++;
 				} else {
 					level = Math.max(0, level - 1);
-					brace.element.classList.add(mapClassName('brace-level-' + (level % LEVEL_WARP + 1)));
+					brace.element.classList.add(mapClassName(`brace-level-${level % LEVEL_WARP + 1}`));
 				}
 			});
 		});
 	}
-});
+} as PluginProto<'match-braces'>;

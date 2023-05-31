@@ -1,15 +1,14 @@
 import cssSelector from '../../languages/prism-css-selector';
+import type { PluginProto } from '../../types';
 
-/** @type {Set<string>} */
-const htmlTags = new Set([
+const htmlTags = new Set<string>([
 	'a', 'abbr', 'acronym', 'b', 'basefont', 'bdo', 'big', 'blink', 'cite', 'code', 'dfn', 'em', 'kbd', 'i',
 	'rp', 'rt', 'ruby', 's', 'samp', 'small', 'spacer', 'strike', 'strong', 'sub', 'sup', 'time', 'tt', 'u',
 	'var', 'wbr', 'noframes', 'summary', 'command', 'dt', 'dd', 'figure', 'figcaption', 'center', 'section', 'nav',
 	'article', 'aside', 'hgroup', 'header', 'footer', 'address', 'noscript', 'isIndex', 'main', 'mark', 'marquee',
 	'meter', 'menu'
 ]);
-/** @type {Set<string>} */
-const svgTags = new Set([
+const svgTags = new Set<string>([
 	'animateColor', 'animateMotion', 'animateTransform', 'glyph', 'feBlend', 'feColorMatrix', 'feComponentTransfer',
 	'feFuncR', 'feFuncG', 'feFuncB', 'feFuncA', 'feComposite', 'feConvolveMatrix', 'feDiffuseLighting', 'feDisplacementMap',
 	'feFlood', 'feGaussianBlur', 'feImage', 'feMerge', 'feMergeNode', 'feMorphology', 'feOffset', 'feSpecularLighting',
@@ -18,14 +17,10 @@ const svgTags = new Set([
 	'font-face', 'font-face-format', 'font-face-name', 'font-face-src', 'font-face-uri', 'foreignObject', 'glyphRef',
 	'hkern', 'vkern'
 ]);
-/** @type {Set<string>} */
-const mathmlTags = new Set();
+const mathmlTags = new Set<string>();
 
 
-/**
- * @param {string} tag
- */
-function getLanguage(tag) {
+function getLanguage(tag: string) {
 	const tagL = tag.toLowerCase();
 
 	if (htmlTags.has(tagL)) {
@@ -61,7 +56,7 @@ function getLanguage(tag) {
 	return null;
 }
 
-export default /** @type {import("../../types").PluginProto<'wpd'>} */ ({
+export default {
 	id: 'wpd',
 	require: cssSelector,
 	effect(Prism) {
@@ -114,4 +109,4 @@ export default /** @type {import("../../types").PluginProto<'wpd'>} */ ({
 			env.attributes.target = '_blank';
 		});
 	}
-});
+} as PluginProto<'wpd'>;

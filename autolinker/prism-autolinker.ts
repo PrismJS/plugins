@@ -1,14 +1,12 @@
 import { addHooks } from '../../shared/hooks-util';
 import { tokenizeStrings } from '../../shared/tokenize-strings';
+import type { PluginProto } from '../../types';
 
-export default /** @type {import("../../types").PluginProto<'autolinker'>} */ ({
+export default {
 	id: 'autolinker',
 	optional: 'diff-highlight',
 	effect(Prism) {
-		/**
-		 * @param {string} chars
-		 */
-		function balanced(chars) {
+		function balanced(chars: string) {
 			return String.raw`(?:${chars}|\((?:${chars})*\))`;
 		}
 
@@ -43,4 +41,4 @@ export default /** @type {import("../../types").PluginProto<'autolinker'>} */ ({
 			}
 		});
 	}
-});
+} as PluginProto<'autolinker'>;

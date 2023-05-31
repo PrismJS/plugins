@@ -1,17 +1,15 @@
 import toolbar from '../toolbar/prism-toolbar';
+import type { PluginProto } from '../../types';
 
+interface CopyInfo {
+	getText: () => string;
+	success: () => void;
+	error: (reason: unknown) => void;
+}
 /**
  * When the given elements is clicked by the user, the given text will be copied to clipboard.
- *
- * @param {HTMLElement} element
- * @param {CopyInfo} copyInfo
- *
- * @typedef CopyInfo
- * @property {() => string} getText
- * @property {() => void} success
- * @property {(reason: unknown) => void} error
  */
-function registerClipboard(element, copyInfo) {
+function registerClipboard(element: Element, copyInfo: CopyInfo) {
 	element.addEventListener('click', () => {
 		copyTextToClipboard(copyInfo);
 	});
@@ -19,8 +17,7 @@ function registerClipboard(element, copyInfo) {
 
 // https://stackoverflow.com/a/30810322/7595472
 
-/** @param {CopyInfo} copyInfo */
-function fallbackCopyTextToClipboard(copyInfo) {
+function fallbackCopyTextToClipboard(copyInfo: CopyInfo) {
 	const textArea = document.createElement('textarea');
 	textArea.value = copyInfo.getText();
 
@@ -50,8 +47,7 @@ function fallbackCopyTextToClipboard(copyInfo) {
 
 	document.body.removeChild(textArea);
 }
-/** @param {CopyInfo} copyInfo */
-function copyTextToClipboard(copyInfo) {
+function copyTextToClipboard(copyInfo: CopyInfo) {
 	if (navigator.clipboard) {
 		navigator.clipboard.writeText(copyInfo.getText()).then(copyInfo.success, () => {
 			// try the fallback in case `writeText` didn't work
@@ -64,22 +60,15 @@ function copyTextToClipboard(copyInfo) {
 
 /**
  * Selects the text content of the given element.
- *
- * @param {Element} element
  */
-function selectElementText(element) {
+function selectElementText(element: Element) {
 	// https://stackoverflow.com/a/20079910/7595472
 	window.getSelection()?.selectAllChildren(element);
 }
 
-/**
- * @param {Element} element
- * @param {string} attribute
- */
-function getInheritedAttribute(element, attribute) {
-	/** @type {Element | null} */
-	let e = element;
-	for (;e; e = e.parentElement) {
+function getInheritedAttribute(element: Element, attribute: string) {
+	let e: Element | null = element;
+	for (; e; e = e.parentElement) {
 		const value = e.getAttribute(attribute);
 		if (value !== null) {
 			return value;
@@ -87,22 +76,21 @@ function getInheritedAttribute(element, attribute) {
 	}
 }
 
+interface Settings {
+	'copy': string;
+	'copy-error': string;
+	'copy-success': string;
+	'copy-timeout': number;
+}
+
 /**
  * Traverses up the DOM tree to find data attributes that override the default plugin settings.
  *
- * @param {Element} startElement An element to start from.
- * @returns {Settings} The plugin settings.
- *
- * @typedef {{
- *   "copy": string;
- *   "copy-error": string;
- *   "copy-success": string;
- *   "copy-timeout": number;
- * }} Settings
+ * @param startElement An element to start from.
+ * @returns The plugin settings.
  */
-function getSettings(startElement) {
-	/** @type {Settings} */
-	const settings = {
+function getSettings(startElement: Element) {
+	const settings: Settings = {
 		'copy': 'Copy',
 		'copy-error': 'Press Ctrl+C to copy',
 		'copy-success': 'Copied!',
@@ -110,7 +98,7 @@ function getSettings(startElement) {
 	};
 
 	for (const k in settings) {
-		const key = /** @type {keyof Settings} */ (k);
+		const key = k as keyof Settings;
 		const value = getInheritedAttribute(startElement, 'data-prismjs-' + key);
 		if (value) {
 			if (key === 'copy-timeout') {
@@ -126,11 +114,12 @@ function getSettings(startElement) {
 	return settings;
 }
 
-export default /** @type {import("../../types").PluginProto<'copy-to-clipboard'>} */ ({
+export default {
 	id: 'copy-to-clipboard',
 	require: toolbar,
 	effect(Prism) {
-		const toolbar = /** @type {import('../toolbar/prism-toolbar.js').Toolbar} */(Prism.plugins.toolbar);
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		const toolbar = Prism.plugins.toolbar!;
 
 		return toolbar.registerButton('copy-to-clipboard', (env) => {
 			const element = env.element;
@@ -171,11 +160,10 @@ export default /** @type {import("../../types").PluginProto<'copy-to-clipboard'>
 				setTimeout(() => setState('copy'), settings['copy-timeout']);
 			}
 
-			/** @param {"copy" | "copy-error" | "copy-success"} state */
-			function setState(state) {
+			function setState(state: 'copy' | 'copy-error' | 'copy-success') {
 				linkSpan.textContent = settings[state];
 				linkCopy.setAttribute('data-copy-state', state);
 			}
 		});
 	}
-});
+} as PluginProto<'copy-to-clipboard'>;

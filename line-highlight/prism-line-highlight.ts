@@ -1,36 +1,28 @@
 import { isActive } from '../../shared/dom-util';
 import { combineCallbacks } from '../../shared/hooks-util';
 import { lazy, noop } from '../../shared/util';
+import type { Prism } from '../../core';
+import type { PluginProto } from '../../types';
 
 const LINE_NUMBERS_CLASS = 'line-numbers';
 const LINKABLE_LINE_NUMBERS_CLASS = 'linkable-line-numbers';
 const NEW_LINE_EXP = /\n(?!$)/g;
 
-/**
- * @param {string} selector
- * @param {ParentNode} [container]
- * @returns {Element[]}
- */
-function $$(selector, container = document) {
+function $$(selector: string, container: ParentNode = document) {
 	return [...container.querySelectorAll(selector)];
 }
 
 /**
  * Returns the top offset of the content box of the given parent and the content box of one of its children.
- *
- * @param {HTMLElement} parent
- * @param {HTMLElement} child
  */
-function getContentBoxTopOffset(parent, child) {
+function getContentBoxTopOffset(parent: HTMLElement, child: HTMLElement) {
 	const parentStyle = getComputedStyle(parent);
 	const childStyle = getComputedStyle(child);
 
 	/**
 	 * Returns the numeric value of the given pixel value.
-	 *
-	 * @param {string} px
 	 */
-	function pxToNumber(px) {
+	function pxToNumber(px: string) {
 		return +px.substr(0, px.length - 2);
 	}
 
@@ -42,22 +34,15 @@ function getContentBoxTopOffset(parent, child) {
 
 /**
  * Returns whether the given element has the given class.
- *
- * @param {Element} element
- * @param {string} className
- * @returns {boolean}
  */
-function hasClass(element, className) {
+function hasClass(element: Element, className: string) {
 	return element.classList.contains(className);
 }
 
 /**
  * Calls the given function.
- *
- * @param {() => void} func
- * @returns {void}
  */
-function callFunction(func) {
+function callFunction(func: () => void): void {
 	func();
 }
 
@@ -84,10 +69,8 @@ export class LineHighlight {
 	 * @package
 	 */
 	scrollIntoView = true;
-	/**
-	 * @param {import('../../core/prism.js').Prism} Prism
-	 */
-	constructor(Prism) {
+	Prism: Prism;
+	constructor(Prism: Prism) {
 		this.Prism = Prism;
 	}
 	/**
@@ -95,13 +78,8 @@ export class LineHighlight {
 	 *
 	 * This function is split into a DOM measuring and mutate phase to improve performance.
 	 * The returned function mutates the DOM when called.
-	 *
-	 * @param {HTMLElement} pre
-	 * @param {string | null} [lines]
-	 * @param {string} [classes='']
-	 * @returns {() => void}
 	 */
-	highlightLines(pre, lines, classes = '') {
+	highlightLines(pre: HTMLElement, lines?: string | null, classes = '') {
 		lines = typeof lines === 'string' ? lines : (pre.getAttribute('data-line') || '');
 
 		const ranges = lines.replace(/\s+/g, '').split(',').filter(Boolean);
@@ -112,7 +90,7 @@ export class LineHighlight {
 		const hasLineNumbers = isActive(pre, LINE_NUMBERS_CLASS);
 		const codeElement = pre.querySelector('code');
 		const parentElement = hasLineNumbers ? pre : codeElement || pre;
-		const mutateActions = /** @type {(() => void)[]} */ ([]);
+		const mutateActions: (() => void)[] = [];
 		const lineBreakMatch = codeElement?.textContent?.match(NEW_LINE_EXP);
 		const numberOfLines = lineBreakMatch ? lineBreakMatch.length + 1 : 1;
 		/**
@@ -138,8 +116,7 @@ export class LineHighlight {
 				return;
 			}
 
-			/** @type {HTMLElement} */
-			const line = pre.querySelector('.line-highlight[data-range="' + currentRange + '"]') || document.createElement('div');
+			const line: HTMLElement = pre.querySelector('.line-highlight[data-range="' + currentRange + '"]') || document.createElement('div');
 
 			mutateActions.push(() => {
 				line.setAttribute('aria-hidden', 'true');
@@ -153,14 +130,14 @@ export class LineHighlight {
 				const endNode = this.Prism.plugins.lineNumbers.getLine(pre, end);
 
 				if (startNode) {
-					const top = startNode.offsetTop + codePreOffset + 'px';
+					const top = `${startNode.offsetTop + codePreOffset}px`;
 					mutateActions.push(() => {
 						line.style.top = top;
 					});
 				}
 
 				if (startNode && endNode) {
-					const height = (endNode.offsetTop - startNode.offsetTop) + endNode.offsetHeight + 'px';
+					const height = `${(endNode.offsetTop - startNode.offsetTop) + endNode.offsetHeight}px`;
 					mutateActions.push(() => {
 						line.style.height = height;
 					});
@@ -173,14 +150,14 @@ export class LineHighlight {
 						line.setAttribute('data-end', String(end));
 					}
 
-					line.style.top = (start - offset - 1) * lineHeight + codePreOffset + 'px';
+					line.style.top = `${(start - offset - 1) * lineHeight + codePreOffset}px`;
 
 					line.textContent = new Array(end - start + 2).join(' \n');
 				});
 			}
 
 			mutateActions.push(() => {
-				line.style.width = pre.scrollWidth + 'px';
+				line.style.width = `${pre.scrollWidth}px`;
 			});
 
 			mutateActions.push(() => {
@@ -211,7 +188,7 @@ export class LineHighlight {
 			this.Prism.plugins.lineNumbers.getLines(pre)?.forEach((lineSpan, i) => {
 				const lineNumber = i + start;
 				lineSpan.onclick = () => {
-					const hash = id + '.' + lineNumber;
+					const hash = `${id}.${lineNumber}`;
 
 					// this will prevent scrolling since the span is obviously in view
 					this.scrollIntoView = false;
@@ -229,7 +206,7 @@ export class LineHighlight {
 	}
 }
 
-export default /** @type {import("../../types").PluginProto<'line-highlight'>} */ ({
+export default {
 	id: 'line-highlight',
 	optional: 'line-numbers',
 	plugin(Prism) {
@@ -244,11 +221,8 @@ export default /** @type {import("../../types").PluginProto<'line-highlight'>} *
 		 * Returns whether the Line Highlight plugin is active for the given element.
 		 *
 		 * If this function returns `false`, do not call `highlightLines` for the given element.
-		 *
-		 * @param {Element | null | undefined} pre
-		 * @returns {pre is HTMLPreElement}
 		 */
-		function isActiveFor(pre) {
+		function isActiveFor(pre: Element | null | undefined): pre is HTMLPreElement {
 			if (!pre || !/pre/i.test(pre.nodeName)) {
 				return false;
 			}
@@ -274,6 +248,7 @@ export default /** @type {import("../../types").PluginProto<'line-highlight'>} *
 				line.remove();
 			});
 
+			// eslint-disable-next-line no-sparse-arrays
 			const range = (hash.match(/\.([\d,-]+)$/) || [, ''])[1];
 
 			if (!range || document.getElementById(hash)) {
@@ -315,8 +290,7 @@ export default /** @type {import("../../types").PluginProto<'line-highlight'>} *
 			window.removeEventListener('resize', onResize);
 		};
 
-		/** @type {number | NodeJS.Timeout | undefined} */
-		let fakeTimer = undefined; // Hack to limit the number of times applyHash() runs
+		let fakeTimer: number | NodeJS.Timeout | undefined = undefined; // Hack to limit the number of times applyHash() runs
 
 		const beforeSanityHook = Prism.hooks.add('before-sanity-check', (env) => {
 			const pre = env.element.parentElement;
@@ -349,8 +323,7 @@ export default /** @type {import("../../types").PluginProto<'line-highlight'>} *
 			}
 
 			if (fakeTimer !== undefined) {
-				// @ts-ignore
-				clearTimeout(fakeTimer);
+				clearTimeout(fakeTimer as never);
 			}
 
 			const mutateDom = Prism.plugins.lineHighlight.highlightLines(pre);
@@ -360,4 +333,4 @@ export default /** @type {import("../../types").PluginProto<'line-highlight'>} *
 
 		return combineCallbacks(removeEventListeners, beforeSanityHook, completeHook);
 	}
-});
+} as PluginProto<'line-highlight'>;

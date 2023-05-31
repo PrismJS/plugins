@@ -1,17 +1,18 @@
 import { addHooks } from '../../shared/hooks-util';
+import type { PluginProto } from '../../types';
 
-export default /** @type {import("../../types").PluginProto<'unescaped-markup'>} */ ({
+export default {
 	id: 'unescaped-markup',
 	effect(Prism) {
 		return addHooks(Prism.hooks, {
 			'before-highlightall': (env) => {
 				env.selector += ', [class*="lang-"] script[type="text/plain"]'
-				+ ', [class*="language-"] script[type="text/plain"]'
-				+ ', script[type="text/plain"][class*="lang-"]'
-				+ ', script[type="text/plain"][class*="language-"]';
+					+ ', [class*="language-"] script[type="text/plain"]'
+					+ ', script[type="text/plain"][class*="lang-"]'
+					+ ', script[type="text/plain"][class*="language-"]';
 			},
 			'before-sanity-check': (env) => {
-				const element = /** @type {HTMLElement} */ (env.element);
+				const element = env.element as HTMLElement;
 
 				if (element.matches('script[type="text/plain"]')) {
 					// found a <script type="text/plain" ...> element
@@ -51,4 +52,4 @@ export default /** @type {import("../../types").PluginProto<'unescaped-markup'>}
 			}
 		});
 	}
-});
+} as PluginProto<'unescaped-markup'>;

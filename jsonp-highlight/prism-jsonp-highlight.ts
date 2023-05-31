@@ -1,10 +1,9 @@
 import { addHooks } from '../../shared/hooks-util';
+import type { Prism } from '../../core';
+import type { PluginProto } from '../../types';
 
-/**
- * @returns {Record<string, unknown>}
- */
-function getGlobal() {
-	return typeof window === 'object' ? /** @type {any} */ (window) : {};
+function getGlobal(): Record<string, unknown> {
+	return typeof window === 'object' ? window as never : {};
 }
 
 let jsonpCallbackCounter = 0;
@@ -12,16 +11,12 @@ let jsonpCallbackCounter = 0;
 /**
  * Makes a JSONP request.
  *
- * @param {string} src The URL of the resource to request.
- * @param {string | undefined | null} callbackParameter The name of the callback parameter. If falsy, `"callback"`
+ * @param src The URL of the resource to request.
+ * @param callbackParameter The name of the callback parameter. If falsy, `"callback"`
  * will be used.
- * @param {number} timeout
- * @param {(data: unknown) => void} onSuccess
- * @param {(reason: "timeout" | "network") => void} onError
- * @returns {void}
  */
-function jsonp(src, callbackParameter, timeout, onSuccess, onError) {
-	const callbackName = 'prismjsonp' + jsonpCallbackCounter++;
+function jsonp(src: string, callbackParameter: string | undefined | null, timeout: number, onSuccess: (data: unknown) => void, onError: (reason: 'timeout' | 'network') => void): void {
+	const callbackName = `prismjsonp${jsonpCallbackCounter++}`;
 
 	const uri = document.createElement('a');
 	uri.href = src;
@@ -50,10 +45,8 @@ function jsonp(src, callbackParameter, timeout, onSuccess, onError) {
 
 	/**
 	 * The JSONP callback function
-	 *
-	 * @param {unknown} response
 	 */
-	global[callbackName] = (response) => {
+	global[callbackName] = (response: unknown) => {
 		cleanup();
 		onSuccess(response);
 	};
@@ -70,13 +63,7 @@ const STATUS_FAILED = 'failed';
 const SELECTOR = 'pre[data-jsonp]:not([' + STATUS_ATTR + '="' + STATUS_LOADED + '"])'
 	+ ':not([' + STATUS_ATTR + '="' + STATUS_LOADING + '"])';
 
-
-/**
- * @callback Adapter
- * @param {any} response
- * @param {HTMLPreElement} pre
- * @returns {string | null}
- */
+type Adapter = (response: unknown, pre: HTMLPreElement) => string | null;
 
 export class JsonpHighlight {
 	/**
@@ -87,21 +74,14 @@ export class JsonpHighlight {
 	 */
 	timeout = 5000;
 
+	private Prism: Prism;
 	/**
-	 *
-	 * @param {import('../../core/prism.js').Prism} Prism
+	 * The list of adapter which will be used if `data-adapter` is not specified.
 	 */
-	constructor(Prism) {
-		/** @private */
-		this.Prism = Prism;
+	private adapters: { adapter: Adapter, name: string }[] = [];
 
-		/**
-		 * The list of adapter which will be used if `data-adapter` is not specified.
-		 *
-		 * @type {{adapter: Adapter, name: string}[]}
-		 * @private
-		 */
-		this.adapters = [];
+	constructor(Prism: Prism) {
+		this.Prism = Prism;
 	}
 
 
@@ -110,10 +90,10 @@ export class JsonpHighlight {
 	 *
 	 * If no fitting adapter is registered, `null` will be returned.
 	 *
-	 * @param {string | Adapter} adapter The adapter itself or the name of an adapter.
+	 * @param adapter The adapter itself or the name of an adapter.
 	 * @private
 	 */
-	getAdapter(adapter) {
+	getAdapter(adapter: string | Adapter) {
 		if (typeof adapter === 'function') {
 			for (const item of this.adapters) {
 				if (item.adapter.valueOf() === adapter.valueOf()) {
@@ -137,10 +117,10 @@ export class JsonpHighlight {
 	 * If the given adapter is already registered or not a function or there is an adapter with the given name already,
 	 * nothing will happen.
 	 *
-	 * @param {string} name The name of the adapter.
-	 * @param {Adapter} adapter The adapter to be registered.
+	 * @param name The name of the adapter.
+	 * @param adapter The adapter to be registered.
 	 */
-	registerAdapter(name, adapter) {
+	registerAdapter(name: string, adapter: Adapter) {
 		if (typeof adapter === 'function' && !this.getAdapter(adapter) && !this.getAdapter(name)) {
 			this.adapters.push({ adapter, name });
 		}
@@ -150,9 +130,9 @@ export class JsonpHighlight {
 	 * Remove the given adapter or the first registered adapter with the given name from the list of
 	 * registered adapters.
 	 *
-	 * @param {string | Adapter} adapter The adapter itself or the name of an adapter.
+	 * @param adapter The adapter itself or the name of an adapter.
 	 */
-	removeAdapter(adapter) {
+	removeAdapter(adapter: string | Adapter) {
 		const resolvedAdapter = typeof adapter === 'string' ? this.getAdapter(adapter) : adapter;
 		if (resolvedAdapter) {
 			const index = this.adapters.findIndex((item) => item.adapter === resolvedAdapter);
@@ -166,10 +146,8 @@ export class JsonpHighlight {
 	 * Runs all registered adapters in the order they were registered using
 	 * the given arguments. The result of the first adapter that returns a
 	 * string will be returned and iteration will be stopped.
-	 *
-	 * @param {Parameters<Adapter>} args
 	 */
-	runAdapters(...args) {
+	runAdapters(...args: Parameters<Adapter>) {
 		for (const adapter of this.adapters) {
 			const data = adapter.adapter(...args);
 			if (data !== null) {
@@ -186,9 +164,9 @@ export class JsonpHighlight {
 	 *
 	 * Note: Elements which are already loaded or currently loading will not be touched by this method.
 	 *
-	 * @param {Element | Document} [container=document]
+	 * @param container Defaults to `document`.
 	 */
-	highlight(container = document) {
+	highlight(container: Element | Document = document) {
 		const elements = container.querySelectorAll(SELECTOR);
 
 		for (const element of elements) {
@@ -198,15 +176,21 @@ export class JsonpHighlight {
 }
 
 
-export default /** @type {import("../../types").PluginProto<'jsonp-highlight'>} */ ({
+export default {
 	id: 'jsonp-highlight',
 	plugin(Prism) {
 		const config = new JsonpHighlight(Prism);
 
-		config.registerAdapter('github', (rsp) => {
+		/* eslint-disable @typescript-eslint/no-explicit-any */
+		/* eslint-disable @typescript-eslint/no-unsafe-argument */
+		/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+		/* eslint-disable @typescript-eslint/no-unsafe-call */
+		/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+		/* eslint-disable @typescript-eslint/restrict-template-expressions */
+		config.registerAdapter('github', (rsp: any) => {
 			if (rsp && rsp.meta && rsp.data) {
 				if (rsp.meta.status && rsp.meta.status >= 400) {
-					return 'Error: ' + (rsp.data.message || rsp.meta.status);
+					return `Error: ${rsp.data.message || rsp.meta.status}`;
 				} else if (typeof (rsp.data.content) === 'string') {
 					return typeof (atob) === 'function'
 						? atob(rsp.data.content.replace(/\s/g, ''))
@@ -215,10 +199,10 @@ export default /** @type {import("../../types").PluginProto<'jsonp-highlight'>} 
 			}
 			return null;
 		});
-		config.registerAdapter('gist', (rsp, el) => {
+		config.registerAdapter('gist', (rsp: any, el) => {
 			if (rsp && rsp.meta && rsp.data && rsp.data.files) {
 				if (rsp.meta.status && rsp.meta.status >= 400) {
-					return 'Error: ' + (rsp.data.message || rsp.meta.status);
+					return `Error: ${rsp.data.message || rsp.meta.status}`;
 				}
 
 				const files = rsp.data.files;
@@ -236,18 +220,24 @@ export default /** @type {import("../../types").PluginProto<'jsonp-highlight'>} 
 				}
 
 				if (filename && files[filename] !== undefined) {
-					return files[filename].content;
+					return String(files[filename].content);
 				}
-				return 'Error: unknown or missing gist file ' + filename;
+				return `Error: unknown or missing gist file ${filename}`;
 			}
 			return null;
 		});
-		config.registerAdapter('bitbucket', (rsp) => {
+		config.registerAdapter('bitbucket', (rsp: any) => {
 			if (rsp && rsp.node && typeof (rsp.data) === 'string') {
-				return rsp.data;
+				return String(rsp.data);
 			}
 			return null;
 		});
+		/* eslint-enable @typescript-eslint/no-explicit-any */
+		/* eslint-enable @typescript-eslint/no-unsafe-argument */
+		/* eslint-enable @typescript-eslint/no-unsafe-assignment */
+		/* eslint-enable @typescript-eslint/no-unsafe-call */
+		/* eslint-enable @typescript-eslint/no-unsafe-member-access */
+		/* eslint-enable @typescript-eslint/restrict-template-expressions */
 
 		return config;
 	},
@@ -256,12 +246,10 @@ export default /** @type {import("../../types").PluginProto<'jsonp-highlight'>} 
 
 
 		const LOADING_MESSAGE = 'Loading…';
-		/** @param {string} name */
-		const MISSING_ADAPTER_MESSAGE = (name) => {
+		const MISSING_ADAPTER_MESSAGE = (name: string) => {
 			return '✖ Error: JSONP adapter function "' + name + '" doesn\'t exist';
 		};
-		/** @param {string} url */
-		const TIMEOUT_MESSAGE = (url) => {
+		const TIMEOUT_MESSAGE = (url: string) => {
 			return '✖ Error: Timeout loading ' + url;
 		};
 		const UNKNOWN_FAILURE_MESSAGE = '✖ Error: Cannot parse response (perhaps you need an adapter function?)';
@@ -271,7 +259,7 @@ export default /** @type {import("../../types").PluginProto<'jsonp-highlight'>} 
 				env.selector += ', ' + SELECTOR;
 			},
 			'before-sanity-check': (env) => {
-				const pre = /** @type {HTMLPreElement} */ (env.element);
+				const pre = env.element as HTMLPreElement;
 				if (!pre.matches(SELECTOR)) {
 					return;
 				}
@@ -301,12 +289,11 @@ export default /** @type {import("../../types").PluginProto<'jsonp-highlight'>} 
 				}
 
 				const adapterName = pre.getAttribute('data-adapter');
-				/** @type {Adapter | null} */
-				let adapter = null;
+				let adapter: Adapter | null = null;
 				if (adapterName) {
 					const global = getGlobal();
 					if (typeof global[adapterName] === 'function') {
-						adapter = /** @type {Adapter} */ (global[adapterName]);
+						adapter = global[adapterName] as Adapter;
 					} else {
 						// mark as failed
 						pre.setAttribute(STATUS_ATTR, STATUS_FAILED);
@@ -352,4 +339,4 @@ export default /** @type {import("../../types").PluginProto<'jsonp-highlight'>} 
 			}
 		});
 	}
-});
+} as PluginProto<'jsonp-highlight'>;
