@@ -1,5 +1,6 @@
 import cssExtras from '../../languages/prism-css-extras';
 import { MARKUP_TAG } from '../../shared/languages/patterns';
+import type { PluginProto } from '../../types';
 
 const HTML_TAG = RegExp(MARKUP_TAG, 'g');
 
@@ -14,11 +15,8 @@ const HEX_COLOR = /^#?((?:[\da-f]){3,4}|(?:[\da-f]{2}){3,4})$/i;
  *
  * Hexadecimal colors are parsed because they are not fully supported by older browsers, so converting them to
  * `rgba` functions improves browser compatibility.
- *
- * @param {string} hex
- * @returns {string | undefined}
  */
-function parseHexColor(hex) {
+function parseHexColor(hex: string) {
 	const match = HEX_COLOR.exec(hex);
 	if (!match) {
 		return undefined;
@@ -53,11 +51,8 @@ function parseHexColor(hex) {
 
 /**
  * Validates the given Color using the current browser's internal implementation.
- *
- * @param {string} color
- * @returns {string | undefined}
  */
-function validateColor(color) {
+function validateColor(color: string) {
 	if (typeof document === 'undefined') {
 		return undefined;
 	}
@@ -67,7 +62,7 @@ function validateColor(color) {
 	return s.color ? color : undefined;
 }
 
-export default /** @type {import("../../types").PluginProto<'inline-color'>} */ ({
+export default {
 	id: 'inline-color',
 	require: cssExtras,
 	effect(Prism) {
@@ -76,8 +71,6 @@ export default /** @type {import("../../types").PluginProto<'inline-color'>} */ 
 		 *
 		 * These parser serve as validators and as a layer of compatibility to support color formats which the browser
 		 * might not support natively.
-		 *
-		 * @type {((value: string) => (string|undefined))[]}
 		 */
 		const parsers = [
 			parseHexColor,
@@ -105,4 +98,4 @@ export default /** @type {import("../../types").PluginProto<'inline-color'>} */ 
 			}
 		});
 	}
-});
+} as PluginProto<'inline-color'>;

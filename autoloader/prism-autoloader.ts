@@ -1,10 +1,12 @@
 import { getParentPre } from '../../shared/dom-util';
 import { resolveAlias } from '../../shared/meta/alias-data';
 import { toArray } from '../../shared/util';
+import type { Prism } from '../../core';
+import type { ComponentProto, PluginProto } from '../../types';
 
 function getDefaultSrcPath() {
 	if (typeof document !== 'undefined') {
-		const script = /** @type {HTMLScriptElement | null} */ (document.currentScript);
+		const script = document.currentScript as HTMLScriptElement | null;
 		if (script) {
 			const autoloaderFile = /\bplugins\/autoloader\/prism-autoloader\.(?:min\.)?js(?:\?[^\r\n/]*)?$/i;
 			const prismFile = /(^|\/)[\w-]+\.(?:min\.)?m?js(?:\?[^\r\n/]*)?$/i;
@@ -29,22 +31,17 @@ function getDefaultSrcPath() {
 	return 'components/';
 }
 
-/**
- * @param {string} dir
- * @param {string} file
- */
-function pathJoin(dir, file) {
+function pathJoin(dir: string, file: string) {
 	return dir.replace(/\/$/, '') + '/' + file;
 }
 
-/** @type {ReadonlySet<string>} */
-const ignoredLanguages = new Set(['none']);
+const ignoredLanguages: ReadonlySet<string> = new Set(['none']);
 
 /**
- * @param {import('../../core/prism').Prism} Prism
- * @param {string} name The name of the language
+ * @param Prism The Prism instance
+ * @param name The name of the language
  */
-function isLoaded(Prism, name) {
+function isLoaded(Prism: Prism, name: string) {
 	// resolve alias
 	const id = resolveAlias(name);
 	return Prism.components.has(id) || ignoredLanguages.has(id);
@@ -53,28 +50,20 @@ function isLoaded(Prism, name) {
 export class Autoloader {
 	srcPath = getDefaultSrcPath();
 
-	/**
-	 * @type {Map<string, Promise<any>>}
-	 * @private
-	 */
-	_importCache = new Map();
+	private _importCache = new Map<string, Promise<unknown>>();
+	private Prism: Prism;
 
 	/**
-	 * @param {import('../../core/prism.js').Prism} Prism
 	 * @package
 	 */
-	constructor(Prism) {
-		/** @private */
+	constructor(Prism: Prism) {
 		this.Prism = Prism;
 	}
 
 	/**
 	 * Loads all given languages concurrently.
-	 *
-	 * @param {string | readonly string[]} languages
-	 * @returns {Promise<void>}
 	 */
-	async loadLanguages(languages) {
+	async loadLanguages(languages: string | readonly string[]): Promise<void> {
 		const toLoad = toArray(languages)
 			.map(resolveAlias)
 			.filter((id) => !isLoaded(this.Prism, id));
@@ -85,7 +74,8 @@ export class Autoloader {
 			let promise = this._importCache.get(path);
 			if (promise === undefined) {
 				promise = import(path).then((exports) => {
-					const proto = /** @type {import('../../types').ComponentProto} */ (exports.default);
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+					const proto = exports.default as ComponentProto;
 					this.Prism.components.add(proto);
 				});
 				this._importCache.set(path, promise);
@@ -98,18 +88,15 @@ export class Autoloader {
 	 * Loads all given languages concurrently.
 	 *
 	 * This function simply invokes {@link Autoloader#loadLanguages} and logs errors to `console.error`.
-	 *
-	 * @param {string | readonly string[]} languages
-	 * @returns {void}
 	 */
-	preloadLanguages(languages) {
+	preloadLanguages(languages: string | readonly string[]): void {
 		this.loadLanguages(languages).catch((reason) => {
-			console.error(`Failed to preload languages (${toArray(languages).join(', ')}): ${reason}`);
+			console.error(`Failed to preload languages (${toArray(languages).join(', ')}): ${String(reason)}`);
 		});
 	}
 }
 
-export default /** @type {import("../../types").PluginProto<'autoloader'>} */ ({
+export default {
 	id: 'autoloader',
 	plugin(Prism) {
 		return new Autoloader(Prism);
@@ -117,11 +104,8 @@ export default /** @type {import("../../types").PluginProto<'autoloader'>} */ ({
 	effect(Prism) {
 		/**
 		 * Returns all additional dependencies of the given element defined by the `data-dependencies` attribute.
-		 *
-		 * @param {Element} element
-		 * @returns {string[]}
 		 */
-		function getDependencies(element) {
+		function getDependencies(element: Element) {
 			let deps = element.getAttribute('data-dependencies')?.trim();
 			if (!deps) {
 				const parent = getParentPre(element);
@@ -129,16 +113,13 @@ export default /** @type {import("../../types").PluginProto<'autoloader'>} */ ({
 					deps = parent.getAttribute('data-dependencies')?.trim();
 				}
 			}
-			return deps ? deps.split(/\s*,\s*/g) : [];
+			return deps ? deps.split(/\s*,\s*/) : [];
 		}
 
 		/**
 		 * Maps the given name to a list of components that have to be loaded.
-		 *
-		 * @param {string} name
-		 * @returns {string[]}
 		 */
-		function mapDependency(name) {
+		function mapDependency(name: string) {
 			if (!name || ignoredLanguages.has(name)) {
 				return [];
 			} else if (/^diff-./i.test(name)) {
@@ -168,9 +149,9 @@ export default /** @type {import("../../types").PluginProto<'autoloader'>} */ ({
 			Prism.plugins.autoloader.loadLanguages(deps).then(
 				() => Prism.highlightElement(element),
 				(reason) => {
-					console.error(`Failed to load languages (${deps.join(', ')}): ${reason}`);
+					console.error(`Failed to load languages (${deps.join(', ')}): ${String(reason)}`);
 				}
 			);
 		});
 	}
-});
+} as PluginProto<'autoloader'>;

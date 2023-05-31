@@ -1,37 +1,29 @@
 import { getParentPre, isActive } from '../../shared/dom-util';
 import { combineCallbacks } from '../../shared/hooks-util';
 import { isNonNull, noop } from '../../shared/util';
+import type { PluginProto } from '../../types';
 
 /**
  * Plugin name which is used as a class name for <pre> which is activating the plugin
- *
- * @type {string}
  */
 const PLUGIN_NAME = 'line-numbers';
 
 /**
  * Regular expression used for determining line breaks
- *
- * @type {RegExp}
  */
 const NEW_LINE_EXP = /\n(?!$)/g;
 
 /**
  * Queries for the `line-numbers-rows` element
- *
- * @param {Element} element
- * @returns {HTMLElement | null}
  */
-function getLineNumbersRows(element) {
+function getLineNumbersRows(element: Element): HTMLElement | null {
 	return element.querySelector('.line-numbers-rows');
 }
 
 /**
  * Resizes the given elements.
- *
- * @param {Element[]} elements
  */
-function resizeElements(elements) {
+function resizeElements(elements: Element[]) {
 	elements = elements.filter((e) => {
 		const codeStyles = getComputedStyle(e);
 		const whiteSpace = codeStyles.whiteSpace;
@@ -42,27 +34,23 @@ function resizeElements(elements) {
 		return;
 	}
 
-	/**
-	 * @type {{
-	 *   element: Element;
-	 *   lines: string[];
-	 *   lineHeights: (number | undefined)[];
-	 *   oneLinerHeight: number;
-	 *   sizer: HTMLElement;
-	 *   wrapper: HTMLElement;
-	 * }[]}
-	 */
-	const infos = elements.map((element) => {
+	const infos = elements.map((element): {
+		element: Element;
+		lines: string[];
+		lineHeights: (number | undefined)[];
+		oneLinerHeight: number;
+		sizer: HTMLElement;
+		wrapper: HTMLElement;
+	} | undefined => {
 		const codeElement = element.querySelector('code');
 		const lineNumbersWrapper = getLineNumbersRows(element);
 		if (!codeElement || !lineNumbersWrapper) {
 			return undefined;
 		}
 
-		/** @type {HTMLElement | null} */
-		let lineNumberSizer = element.querySelector('.line-numbers-sizer');
-		// @ts-ignore
-		const codeLines = codeElement.textContent.split(NEW_LINE_EXP);
+		let lineNumberSizer: HTMLElement | null = element.querySelector('.line-numbers-sizer');
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		const codeLines = codeElement.textContent!.split(NEW_LINE_EXP);
 
 		if (!lineNumberSizer) {
 			lineNumberSizer = document.createElement('span');
@@ -124,8 +112,10 @@ function resizeElements(elements) {
 		lineNumberSizer.innerHTML = '';
 
 		info.lineHeights.forEach((height, lineNumber) => {
-			// @ts-ignore
-			info.wrapper.children[lineNumber].style.height = height + 'px';
+			if (height !== undefined) {
+				const child = info.wrapper.children[lineNumber] as HTMLElement;
+				child.style.height = `${height}px`;
+			}
 		});
 	});
 }
@@ -138,19 +128,16 @@ export class LineNumbers {
 	 * Setting this to `true` will allow the plugin to do certain optimizations for better performance.
 	 *
 	 * Set this to `false` if you use any of the following CSS units: `vh`, `vw`, `vmin`, `vmax`.
-	 *
-	 * @type {boolean}
 	 */
 	assumeViewportIndependence = true;
 
 	/**
 	 * Get node for provided line number
 	 *
-	 * @param {Element} element pre element
-	 * @param {number} number line number
-	 * @returns {HTMLElement | undefined}
+	 * @param element pre element
+	 * @param number line number
 	 */
-	getLine(element, number) {
+	getLine(element: Element, number: number): HTMLElement | undefined {
 		if (element.tagName !== 'PRE' || !element.classList.contains(PLUGIN_NAME)) {
 			return;
 		}
@@ -171,16 +158,15 @@ export class LineNumbers {
 
 		const lineIndex = number - lineNumberStart;
 
-		return /** @type {HTMLElement} */ (lineNumberRows.children[lineIndex]);
+		return lineNumberRows.children[lineIndex] as HTMLElement;
 	}
 
 	/**
 	 * Returns the nodes of all line numbers.
 	 *
-	 * @param {Element} element pre element
-	 * @returns {HTMLElement[] | undefined}
+	 * @param element pre element
 	 */
-	getLines(element) {
+	getLines(element: Element): HTMLElement[] | undefined {
 		if (element.tagName !== 'PRE' || !element.classList.contains(PLUGIN_NAME)) {
 			return;
 		}
@@ -190,7 +176,7 @@ export class LineNumbers {
 			return;
 		}
 
-		return /** @type {HTMLElement[]} */ ([...lineNumberRows.children]);
+		return [...lineNumberRows.children] as HTMLElement[];
 	}
 
 	/**
@@ -198,15 +184,14 @@ export class LineNumbers {
 	 *
 	 * This function will not add line numbers. It will only resize existing ones.
 	 *
-	 * @param {Element} element A `<pre>` element with line numbers.
-	 * @returns {void}
+	 * @param element A `<pre>` element with line numbers.
 	 */
-	resize(element) {
+	resize(element: Element): void {
 		resizeElements([element]);
 	}
 }
 
-export default /** @type {import("../../types").PluginProto<'line-numbers'>} */ ({
+export default {
 	id: 'line-numbers',
 	plugin() {
 		return new LineNumbers();
@@ -235,7 +220,7 @@ export default /** @type {import("../../types").PluginProto<'line-numbers'>} */ 
 				return;
 			}
 
-			const code = /** @type {Element} */ (env.element);
+			const code = env.element;
 			const pre = getParentPre(code);
 
 			// works only for <code> wrapped inside <pre> (not inline)
@@ -268,7 +253,7 @@ export default /** @type {import("../../types").PluginProto<'line-numbers'>} */ 
 			lineNumbersWrapper.innerHTML = '<span></span>'.repeat(linesNum);
 
 			if (pre.hasAttribute('data-start')) {
-				pre.style.counterReset = 'linenumber ' + (parseInt(String(pre.getAttribute('data-start')), 10) - 1);
+				pre.style.counterReset = `linenumber ${parseInt(String(pre.getAttribute('data-start')), 10) - 1}`;
 			}
 
 			env.element.appendChild(lineNumbersWrapper);
@@ -278,4 +263,4 @@ export default /** @type {import("../../types").PluginProto<'line-numbers'>} */ 
 
 		return combineCallbacks(removeListener, completeHook);
 	}
-});
+} as PluginProto<'line-numbers'>;

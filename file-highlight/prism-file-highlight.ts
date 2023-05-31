@@ -1,12 +1,10 @@
 import { setLanguage } from '../../shared/dom-util';
 import { addHooks } from '../../shared/hooks-util';
+import type { Prism } from '../../core';
+import type { PluginProto } from '../../types';
 
-/**
- * @param {number} status
- * @param {string} message
- */
-const FAILURE_MESSAGE = (status, message) => {
-	return '✖ Error ' + status + ' while fetching file: ' + message;
+const FAILURE_MESSAGE = (status: number, message: string) => {
+	return `✖ Error ${status} while fetching file: ${message}`;
 };
 const LOADING_MESSAGE = 'Loading…';
 const FAILURE_EMPTY_MESSAGE = '✖ Error: File does not exist or is empty';
@@ -14,11 +12,9 @@ const FAILURE_EMPTY_MESSAGE = '✖ Error: File does not exist or is empty';
 /**
  * Loads the given file.
  *
- * @param {string} src The URL or path of the source file to load.
- * @param {(result: string) => void} success
- * @param {(reason: string) => void} error
+ * @param src The URL or path of the source file to load.
  */
-function loadFile(src, success, error) {
+function loadFile(src: string, success: (result: string) => void, error: (reason: string) => void) {
 	const xhr = new XMLHttpRequest();
 	xhr.open('GET', src, true);
 	xhr.onreadystatechange = function () {
@@ -37,8 +33,7 @@ function loadFile(src, success, error) {
 	xhr.send(null);
 }
 
-/** @type {Record<string, string | undefined>} */
-const EXTENSIONS = {
+const EXTENSIONS: Record<string, string | undefined> = {
 	'js': 'javascript',
 	'py': 'python',
 	'rb': 'ruby',
@@ -59,11 +54,12 @@ const SELECTOR = 'pre[data-src]:not([' + STATUS_ATTR + '="' + STATUS_LOADED + '"
 	+ ':not([' + STATUS_ATTR + '="' + STATUS_LOADING + '"])';
 
 export class FileHighlight {
+	private Prism: Prism;
+
 	/**
-	 * @param {import('../../core/prism.js').Prism} Prism
 	 * @package
 	 */
-	constructor(Prism) {
+	constructor(Prism: Prism) {
 		this.Prism = Prism;
 	}
 
@@ -72,9 +68,9 @@ export class FileHighlight {
 	 *
 	 * Note: Elements which are already loaded or currently loading will not be touched by this method.
 	 *
-	 * @param {ParentNode} [container=document]
+	 * @param container Defaults to `document`.
 	 */
-	highlight(container = document) {
+	highlight(container: ParentNode = document) {
 		const elements = container.querySelectorAll(SELECTOR);
 
 		for (const element of elements) {
@@ -83,7 +79,7 @@ export class FileHighlight {
 	}
 }
 
-export default /** @type {import("../../types").PluginProto<'file-highlight'>} */ ({
+export default {
 	id: 'file-highlight',
 	plugin(Prism) {
 		return new FileHighlight(Prism);
@@ -93,11 +89,8 @@ export default /** @type {import("../../types").PluginProto<'file-highlight'>} *
 		 * Parses the given range.
 		 *
 		 * This returns a range with inclusive ends.
-		 *
-		 * @param {string | null | undefined} range
-		 * @returns {[number, number | undefined] | undefined}
 		 */
-		function parseRange(range) {
+		function parseRange(range: string | null | undefined): [number, number | undefined] | undefined {
 			const m = /^\s*(\d+)\s*(?:(,)\s*(?:(\d+)\s*)?)?$/.exec(range || '');
 			if (m) {
 				const start = Number(m[1]);
@@ -120,7 +113,7 @@ export default /** @type {import("../../types").PluginProto<'file-highlight'>} *
 				env.selector += ', ' + SELECTOR;
 			},
 			'before-sanity-check': (env) => {
-				const pre = /** @type {HTMLPreElement} */ (env.element);
+				const pre = env.element as HTMLPreElement;
 
 				if (!pre.matches(SELECTOR)) {
 					return;
@@ -142,8 +135,8 @@ export default /** @type {import("../../types").PluginProto<'file-highlight'>} *
 
 				let language = env.language;
 				if (language === 'none') {
-				// the language might be 'none' because there is no language set;
-				// in this case, we want to use the extension as the language
+					// the language might be 'none' because there is no language set;
+					// in this case, we want to use the extension as the language
 					const extension = /\.(\w+)$/.exec(src)?.[1] || 'none';
 					language = EXTENSIONS[extension] || extension;
 				}
@@ -162,13 +155,13 @@ export default /** @type {import("../../types").PluginProto<'file-highlight'>} *
 				loadFile(
 					src,
 					(text) => {
-					// mark as loaded
+						// mark as loaded
 						pre.setAttribute(STATUS_ATTR, STATUS_LOADED);
 
 						// handle data-range
 						const range = parseRange(pre.getAttribute('data-range'));
 						if (range) {
-							const lines = text.split(/\r\n?|\n/g);
+							const lines = text.split(/\r\n?|\n/);
 
 							// the range is one-based and inclusive on both ends
 							let start = range[0];
@@ -192,7 +185,7 @@ export default /** @type {import("../../types").PluginProto<'file-highlight'>} *
 						Prism.highlightElement(code);
 					},
 					(error) => {
-					// mark as failed
+						// mark as failed
 						pre.setAttribute(STATUS_ATTR, STATUS_FAILED);
 
 						code.textContent = error;
@@ -201,4 +194,4 @@ export default /** @type {import("../../types").PluginProto<'file-highlight'>} *
 			}
 		});
 	}
-});
+} as PluginProto<'file-highlight'>;

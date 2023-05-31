@@ -1,12 +1,14 @@
 import { getParentPre } from '../../shared/dom-util';
 import { getTitle } from '../../shared/meta/title-data';
 import toolbar from '../toolbar/prism-toolbar';
+import type { PluginProto } from '../../types';
 
-export default /** @type {import("../../types").PluginProto<'show-language'>} */ ({
+export default {
 	id: 'show-language',
 	require: toolbar,
 	effect(Prism) {
-		const toolbar = /** @type {import('../toolbar/prism-toolbar.js').Toolbar} */(Prism.plugins.toolbar);
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		const toolbar = Prism.plugins.toolbar!;
 
 		return toolbar.registerButton('show-language', (env) => {
 			const pre = getParentPre(env.element);
@@ -24,4 +26,4 @@ export default /** @type {import("../../types").PluginProto<'show-language'>} */
 			return element;
 		});
 	}
-});
+} as PluginProto<'show-language'>;

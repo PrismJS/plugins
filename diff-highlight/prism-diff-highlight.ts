@@ -1,17 +1,17 @@
 import { Token, getTextContent } from '../../core/token';
 import diff, { PREFIXES } from '../../languages/prism-diff';
 import { addHooks } from '../../shared/hooks-util';
+import type { BeforeSanityCheckEnv, BeforeTokenizeEnv } from '../../core/hooks';
+import type { TokenStream } from '../../core/token';
+import type { PluginProto } from '../../types';
 
-export default /** @type {import("../../types").PluginProto<'diff-highlight'>} */ ({
+export default {
 	id: 'diff-highlight',
 	require: diff,
 	effect(Prism) {
 		const LANGUAGE_REGEX = /^diff-([\w-]+)/i;
 
-		/**
-		 * @param {import('../../core/hooks-env.js').BeforeSanityCheckEnv | import('../../core/hooks-env.js').BeforeTokenizeEnv} env
-		 */
-		const setMissingGrammar = (env) => {
+		const setMissingGrammar = (env: BeforeSanityCheckEnv | BeforeTokenizeEnv) => {
 			const lang = env.language;
 			if (LANGUAGE_REGEX.test(lang) && !env.grammar) {
 				env.grammar = Prism.components.getLanguage('diff');
@@ -38,7 +38,7 @@ export default /** @type {import("../../types").PluginProto<'diff-highlight'>} *
 						continue;
 					}
 
-					const type = /** @type {keyof PREFIXES} */ (token.type);
+					const type = token.type as keyof typeof PREFIXES;
 					let insertedPrefixes = 0;
 					const getPrefixToken = () => {
 						insertedPrefixes++;
@@ -56,13 +56,8 @@ export default /** @type {import("../../types").PluginProto<'diff-highlight'>} *
 					diffTokens.unshift(getPrefixToken());
 
 					const LINE_BREAK = /\r\n|\n/g;
-					/**
-					 * @param {string} text
-					 * @returns {import('../../core/token').TokenStream | undefined}
-					 */
-					const insertAfterLineBreakString = (text) => {
-						/** @type {import('../../core/token').TokenStream} */
-						const result = [];
+					const insertAfterLineBreakString = (text: string) => {
+						const result: TokenStream = [];
 						LINE_BREAK.lastIndex = 0;
 						let last = 0;
 						let m;
@@ -82,10 +77,7 @@ export default /** @type {import("../../types").PluginProto<'diff-highlight'>} *
 						}
 						return result;
 					};
-					/**
-					 * @param {import('../../core/token').TokenStream} tokens
-					 */
-					const insertAfterLineBreak = (tokens) => {
+					const insertAfterLineBreak = (tokens: TokenStream) => {
 						for (let i = 0; i < tokens.length && insertedPrefixes < prefixCount; i++) {
 							const token = tokens[i];
 
@@ -117,4 +109,4 @@ export default /** @type {import("../../types").PluginProto<'diff-highlight'>} *
 			}
 		});
 	}
-});
+} as PluginProto<'diff-highlight'>;

@@ -1,21 +1,19 @@
 import { getParentPre } from '../../shared/dom-util';
 import { noop } from '../../shared/util';
+import type { CompleteEnv, HookCallback } from '../../core/hooks';
+import type { PluginProto } from '../../types';
 
 /**
  * Returns the callback order of the given element.
- *
- * @param {Element} element
- * @returns {string[] | undefined}
  */
-function getOrder(element) {
-	/** @type {Element | null} */
-	let e = element;
+function getOrder(element: Element) {
+	let e: Element | null = element;
 	for (; e; e = e.parentElement) {
 		let order = e.getAttribute('data-toolbar-order');
 		if (order != null) {
 			order = order.trim();
 			if (order.length) {
-				return order.split(/\s*,\s*/g);
+				return order.split(/\s*,\s*/);
 			} else {
 				return [];
 			}
@@ -23,43 +21,37 @@ function getOrder(element) {
 	}
 }
 
-/**
- * @typedef ButtonOptions
- * @property {string} text The text displayed.
- * @property {string} [url] The URL of the link which will be created.
- * @property {(env: import('../../core/hooks-env.js').CompleteEnv) => void} [onClick] The event listener for the `click` event of the created button.
- * @property {string} [className] The class attribute to include with element.
- */
-/**
- * @typedef {(env: import('../../core/hooks-env.js').CompleteEnv) => Node | undefined} ButtonFactory
- */
+export interface ButtonOptions {
+	/**
+	 * The text displayed.
+	 */
+	text: string;
+	/**
+	 * The URL of the link which will be created.
+	 */
+	url?: string;
+	/**
+	 * The event listener for the `click` event of the created button.
+	 */
+	onClick?: (env: CompleteEnv) => void;
+	/**
+	 * The class attribute to include with element.
+	 */
+	className?: string;
+}
+export type ButtonFactory = (env: CompleteEnv) => Node | undefined;
 
 export class Toolbar {
-	constructor() {
-		/**
-		 * @type {ButtonFactory[]}
-		 * @private
-		 */
-		this.callbacks = [];
-		/**
-		 * @type {Map<string, ButtonFactory>}
-		 * @private
-		 */
-		this.map = new Map();
-	}
+	private callbacks: ButtonFactory[] = [];
+	private map = new Map<string, ButtonFactory>();
 
 	/**
 	 * Register a button callback with the toolbar.
 	 *
 	 * The returned function will remove the added callback again when called.
-	 *
-	 * @param {string} key
-	 * @param {ButtonOptions | ButtonFactory} opts
-	 * @returns {() => void}
 	 */
-	registerButton(key, opts) {
-		/** @type {ButtonFactory} */
-		let callback;
+	registerButton(key: string, opts: ButtonOptions | ButtonFactory): () => void {
+		let callback: ButtonFactory;
 
 		if (typeof opts === 'function') {
 			callback = opts;
@@ -109,10 +101,9 @@ export class Toolbar {
 	}
 
 	/**
-	 * @type {import('../../core/hooks-env.js').HookCallback<"complete">}
 	 * @package
 	 */
-	hook = (env) => {
+	hook: HookCallback<'complete'> = (env) => {
 		// Check if inline or actual code block (credit to line-numbers plugin)
 		const pre = getParentPre(env.element);
 		if (!pre) {
@@ -165,8 +156,7 @@ export class Toolbar {
 	};
 }
 
-/** @type {ButtonFactory} */
-const label = (env) => {
+const label: ButtonFactory = (env) => {
 	const pre = getParentPre(env.element);
 	if (!pre) {
 		return;
@@ -181,11 +171,13 @@ const label = (env) => {
 	const text = pre.getAttribute('data-label');
 	try {
 		// Any normal text will blow up this selector.
-		template = document.querySelector('template#' + text);
+		if (text) {
+			template = document.querySelector('template#' + text);
+		}
 	} catch (e) { /* noop */ }
 
 	if (template) {
-		element = /** @type {HTMLTemplateElement} */(template).content;
+		element = (template as HTMLTemplateElement).content;
 	} else {
 		const url = pre.getAttribute('data-url');
 		if (url) {
@@ -201,7 +193,7 @@ const label = (env) => {
 	return element;
 };
 
-export default /** @type {import("../../types").PluginProto<'toolbar'>} */ ({
+export default {
 	id: 'toolbar',
 	plugin() {
 		const toolbar = new Toolbar();
@@ -211,4 +203,4 @@ export default /** @type {import("../../types").PluginProto<'toolbar'>} */ ({
 	effect(Prism) {
 		return Prism.hooks.add('complete', Prism.plugins.toolbar.hook);
 	}
-});
+} as PluginProto<'toolbar'>;

@@ -1,32 +1,23 @@
 import { isActive } from '../../shared/dom-util';
 import { addHooks } from '../../shared/hooks-util';
+import type { StateKey } from '../../core/hook-state';
+import type { PluginProto } from '../../types';
 
-/**
- * @param {ChildNode} child
- * @returns {child is Element}
- */
-function isElement(child) {
+function isElement(child: ChildNode): child is Element {
 	return child.nodeType === 1;
 }
-/**
- * @param {ChildNode} child
- * @returns {child is Text}
- */
-function isText(child) {
+function isText(child: ChildNode): child is Text {
 	return child.nodeType === 3;
 }
 
-/**
- * @type {import('../../core/hook-state').StateKey<NodeData[]>}
- *
- * @typedef NodeData
- * @property {Element} element
- * @property {number} posOpen
- * @property {number} posClose
- */
-const markupData = 'keep-markup data';
+interface NodeData {
+	element: Element;
+	posOpen: number;
+	posClose: number;
+}
+const markupData: StateKey<NodeData[]> = 'keep-markup data';
 
-export default /** @type {import("../../types").PluginProto<'keep-markup'>} */ ({
+export default {
 	id: 'keep-markup',
 	optional: 'normalize-whitespace',
 	effect(Prism) {
@@ -43,11 +34,8 @@ export default /** @type {import("../../types").PluginProto<'keep-markup'>} */ (
 				const dropTokens = isActive(env.element, 'drop-tokens', false);
 				/**
 				 * Returns whether the given element should be kept.
-				 *
-				 * @param {Element} element
-				 * @returns {boolean}
 				 */
-				function shouldKeep(element) {
+				function shouldKeep(element: Element) {
 					if (dropTokens && element.nodeName.toLowerCase() === 'span' && element.classList.contains('token')) {
 						return false;
 					}
@@ -55,20 +43,15 @@ export default /** @type {import("../../types").PluginProto<'keep-markup'>} */ (
 				}
 
 				let pos = 0;
-				/** @type {NodeData[]} */
-				const data = [];
-				/**
-				 * @param {Element} element
-				 */
-				function processElement(element) {
+				const data: NodeData[] = [];
+				function processElement(element: Element) {
 					if (!shouldKeep(element)) {
 						// don't keep this element and just process its children
 						processChildren(element);
 						return;
 					}
 
-					/** @type {NodeData} */
-					const o = {
+					const o: NodeData = {
 						// Store original element so we can restore it after highlighting
 						element,
 						posOpen: pos,
@@ -80,10 +63,7 @@ export default /** @type {import("../../types").PluginProto<'keep-markup'>} */ (
 
 					o.posClose = pos;
 				}
-				/**
-				 * @param {Element} element
-				 */
-				function processChildren(element) {
+				function processChildren(element: Element) {
 					for (let i = 0, l = element.childNodes.length; i < l; i++) {
 						const child = element.childNodes[i];
 						if (isElement(child)) {
@@ -103,13 +83,9 @@ export default /** @type {import("../../types").PluginProto<'keep-markup'>} */ (
 			'after-highlight': (env) => {
 				const data = env.state.get(markupData, []);
 				if (data.length) {
+					type End = [node: Text, pos: number]
 
-					/**
-					 * @param {Element} elt
-					 * @param {{ node: NodeData, pos: number, start?: End, end?: End }} nodeState
-					 * @typedef {[node: Text, pos: number]} End
-					 */
-					const walk = (elt, nodeState) => {
+					const walk = (elt: Element, nodeState: { node: NodeData, pos: number, start?: End, end?: End }) => {
 						for (let i = 0, l = elt.childNodes.length; i < l; i++) {
 
 							const child = elt.childNodes[i];
@@ -158,4 +134,4 @@ export default /** @type {import("../../types").PluginProto<'keep-markup'>} */ (
 			}
 		});
 	}
-});
+} as PluginProto<'keep-markup'>;

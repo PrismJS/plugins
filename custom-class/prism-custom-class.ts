@@ -1,47 +1,26 @@
-/**
- * @callback ClassMapper
- * @param {string} className
- * @returns {string}
- *
- * @callback ClassAdder
- * @param {ClassAdderEnvironment} env
- * @returns {undefined | string | string[]}
- *
- * @typedef ClassAdderEnvironment
- * @property {string} language
- * @property {string} type
- * @property {string} content
- */
+import type { PluginProto } from '../../types';
+
+type ClassMapper = (className: string) => string;
+type ClassAdder = (env: ClassAdderEnvironment) => undefined | string | string[];
+interface ClassAdderEnvironment {
+	language: string;
+	type: string;
+	content: string;
+}
 
 
 export class CustomClass {
-	constructor() {
-		/**
-		 * @type {ClassAdder | undefined}
-		 * @private
-		 */
-		this.adder = undefined;
-		/**
-		 * @type {ClassMapper | undefined}
-		 * @private
-		 */
-		this.mapper = undefined;
-
-		/**
-		 * A prefix to add to all class names.
-		 *
-		 * @type {string}
-		 * @default '''
-		 */
-		this.prefix = '';
-	}
+	private adder: ClassAdder | undefined;
+	private mapper: ClassMapper | undefined;
+	/**
+	 * A prefix to add to all class names.
+	 */
+	prefix = '';
 
 	/**
 	 * Sets the function which can be used to add custom aliases to any token.
-	 *
-	 * @param {ClassAdder} classAdder
 	 */
-	add(classAdder) {
+	add(classAdder: ClassAdder) {
 		this.adder = classAdder;
 	}
 
@@ -49,10 +28,8 @@ export class CustomClass {
 	 * Maps all class names using the given object or map function.
 	 *
 	 * This does not affect the prefix.
-	 *
-	 * @param {Record<string, string> | ClassMapper} classMapper
 	 */
-	map(classMapper) {
+	map(classMapper: Record<string, string> | ClassMapper) {
 		if (typeof classMapper === 'function') {
 			this.mapper = classMapper;
 		} else {
@@ -63,14 +40,14 @@ export class CustomClass {
 	/**
 	 * Applies the current mapping and prefix to the given class name.
 	 *
-	 * @param {string} className A single class name.
+	 * @param className A single class name.
 	 */
-	apply(className) {
+	apply(className: string) {
 		return this.prefix + (this.mapper ? this.mapper(className) : className);
 	}
 }
 
-export default /** @type {import("../../types").PluginProto<'custom-class'>} */ ({
+export default {
 	id: 'custom-class',
 	plugin() {
 		return new CustomClass();
@@ -100,4 +77,4 @@ export default /** @type {import("../../types").PluginProto<'custom-class'>} */ 
 			env.classes = env.classes.map((c) => customClass.apply(c));
 		});
 	}
-});
+} as PluginProto<'custom-class'>;

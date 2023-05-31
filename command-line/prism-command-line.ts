@@ -1,22 +1,22 @@
 import { getParentPre } from '../../shared/dom-util';
 import { addHooks } from '../../shared/hooks-util';
 import { htmlEncode } from '../../shared/util';
+import type { StateKey } from '../../core/hook-state';
+import type { PluginProto } from '../../types';
 
 const CLASS_PATTERN = /(?:^|\s)command-line(?:\s|$)/;
 const PROMPT_CLASS = 'command-line-prompt';
 
-/**
- * @type {import('../../core/hook-state').StateKey<CommandLineInfo>}
- *
- * @typedef CommandLineInfo
- * @property {boolean} [complete]
- * @property {number} [numberOfLines]
- * @property {string[]} [outputLines]
- * @property {Set<number>} [continuationLineIndicies]
- */
-const commandLineKey = 'command-line data';
+const commandLineKey: StateKey<CommandLineInfo> = 'command-line data';
 
-export default /** @type {import("../../types").PluginProto<'command-line'>} */ ({
+interface CommandLineInfo {
+	complete?: boolean;
+	numberOfLines?: number;
+	outputLines?: string[];
+	continuationLineIndicies?: Set<number>;
+}
+
+export default {
 	id: 'command-line',
 	effect(Prism) {
 		return addHooks(Prism.hooks, {
@@ -45,8 +45,7 @@ export default /** @type {import("../../types").PluginProto<'command-line'>} */ 
 				const codeLines = env.code.split('\n');
 
 				commandLine.numberOfLines = codeLines.length;
-				/** @type {string[]} */
-				const outputLines = commandLine.outputLines = [];
+				const outputLines: string[] = commandLine.outputLines = [];
 
 				const outputSections = pre.getAttribute('data-output');
 				const outputFilter = pre.getAttribute('data-filter-output');
@@ -150,11 +149,7 @@ export default /** @type {import("../../types").PluginProto<'command-line'>} */ 
 					pre.className += ' command-line';
 				}
 
-				/**
-				 * @param {string} key
-				 * @param {string} defaultValue
-				 */
-				const getAttribute = (key, defaultValue) => {
+				const getAttribute = (key: string, defaultValue: string) => {
 					return (pre.getAttribute(key) || defaultValue).replace(/"/g, '&quot');
 				};
 
@@ -205,4 +200,4 @@ export default /** @type {import("../../types").PluginProto<'command-line'>} */ 
 			}
 		});
 	}
-});
+} as PluginProto<'command-line'>;
