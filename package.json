@@ -1,0 +1,30 @@
+{
+	"name": "prismjs-plugins",
+	"version": "0.0.1",
+	"description": "Prism plugins",
+	"type": "module",
+	"scripts": {
+		"build:html": "npx @11ty/eleventy --config=_build/eleventy.js --quiet",
+		"build": "npm run build:html",
+		"watch:html": "npx @11ty/eleventy --config=_build/eleventy.js --serve --quiet",
+		"watch": "npm run watch:html"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/PrismJS/plugins.git"
+	},
+	"bugs": {
+		"url": "https://github.com/PrismJS/plugins/issues"
+	},
+	"homepage": "https://plugins.prismjs.com",
+	"license": "MIT",
+	"devDependencies": {
+		"@11ty/eleventy": "^3.0.0",
+		"markdown-it-anchor": "^9.2.0",
+		"markdown-it-attrs": "^4.3.1",
+		"prettier": "^3.5.3",
+		"prettier-plugin-brace-style": "^0.7.2",
+		"prettier-plugin-merge": "^0.7.2",
+		"prettier-plugin-space-before-function-paren": "^0.0.5"
+	}
+}

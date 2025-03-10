@@ -1,0 +1,8 @@
+main {
+	max-inline-size: 900px;
+	margin-inline: auto;
+}
+
+.plugin-list {
+	column-gap: 2rem;
+}

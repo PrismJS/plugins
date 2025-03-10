@@ -1,0 +1,22 @@
+---
+layout: "page.njk"
+---
+
+<section>
+
+<h1 id="available-plugins" tabindex="-1">
+	<a class="header-anchor" href="#available-plugins">Available plugins</a>
+</h1>
+
+<ul class="plugin-list">
+	{% for id, plugin in plugins -%}
+	<li>
+		<a href="{{ id }}">{{ plugin.title }}</a>
+		<div>{{ plugin.description | safe }}</div>
+	</li>
+	{% endfor -%}
+</ul>
+
+</section>
+
+{{ content | safe }}

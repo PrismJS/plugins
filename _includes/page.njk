@@ -1,0 +1,35 @@
+---
+layout: "plain.njk"
+---
+
+<header>
+	<div class="intro">
+		<h1>
+			<a href="/"><img src="https://prismjs.com/assets/logo.svg" width="100" alt="Prism" /> plugins</a>
+		</h1>
+		<a href="https://staging.prismjs.com/download.html" class="download-button">Download</a>
+		<p>
+			Prism is a lightweight, extensible syntax highlighter, built with modern web standards in mind.
+			It’s used in millions of websites, including some of those you visit daily.
+		</p>
+	</div>
+
+	<div id="theme">
+		<p>Theme:</p>
+		{%- for id, theme in themes %}
+		<input type="radio" name="theme" id="theme-{{ id }}" value="{{ id }}" />
+		<label for="theme-{{ id }}">{{ theme.title or theme}}</label>
+		{%- endfor %}
+	</div>
+
+	{% if id -%}
+	<h2>{{ title }}</h2>
+	<p>{{ description }}</p>
+	{%- endif %}
+</header>
+
+<main>
+
+{{ content | safe }}
+
+</main>
