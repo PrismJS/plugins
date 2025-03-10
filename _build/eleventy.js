@@ -1,5 +1,6 @@
 import markdownItAnchor from "markdown-it-anchor";
 import markdownItAttrs from "markdown-it-attrs";
+import markdownItDeflist from "markdown-it-deflist";
 import pluginTOC from "eleventy-plugin-toc";
 import * as filters from "./filters.js";
 
@@ -25,6 +26,7 @@ export default config => {
 			permalink: markdownItAnchor.permalink.headerLink(),
 		});
 		md.use(markdownItAttrs);
+		md.use(markdownItDeflist);
 	});
 
 	config.addPlugin(pluginTOC, {
