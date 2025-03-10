@@ -44,7 +44,7 @@
 <script src="https://dev.prismjs.com/prism.js"></script>
 <script src="{{ page | relative }}/assets/global.js" type="module"></script>
 {% if id -%}
-<script src="{{ page | relative }}/{{ id }}/prism-{{ id }}.js"></script>
+<script src="{{ page | relative }}/{{ id }}/prism-{{ id }}.js" {{ attributes | safe }}></script>
 {% endif -%}
 
 {{ scripts | safe }}
