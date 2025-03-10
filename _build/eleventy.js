@@ -27,6 +27,14 @@ export default config => {
 		});
 		md.use(markdownItAttrs);
 		md.use(markdownItDeflist);
+
+		// Allow setting attributes on the outer <pre>, not the inner <code>
+		md.renderer.rules.fence = function (tokens, idx, options, env, slf) {
+			let token = tokens[idx];
+			let lang = token.info ? `class="language-${ token.info }"` : "";
+			let content = md.utils.escapeHtml(token.content).trim();
+			return `<pre ${ slf.renderAttrs(token) }><code ${ lang }>${ content }</code></pre>`;
+		};
 	});
 
 	config.addPlugin(pluginTOC, {
