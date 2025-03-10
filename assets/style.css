@@ -6,3 +6,17 @@ main {
 .plugin-list {
 	column-gap: 2rem;
 }
+
+#toc {
+	h2 {
+		font-family: Rockwell, Arvo, serif;
+		font-size: 180%;
+		margin-block-start: .75rem;
+	}
+
+	> nav.toc {
+		li > ol {
+			margin-inline-start: .5rem;
+		}
+	}
+}

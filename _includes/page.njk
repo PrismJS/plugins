@@ -28,6 +28,11 @@ layout: "plain.njk"
 	{%- endif %}
 </header>
 
+<aside id="toc">
+	<h2>On this page</h2>
+	{{ content | toc | safe }}
+</aside>
+
 <main>
 
 {{ content | safe }}
