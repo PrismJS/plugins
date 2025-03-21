@@ -9,6 +9,7 @@ export default config => {
 		// TODO: change to https://prismjs.com when ready
 		base_url: "https://deploy-preview-16--prismjs-website.netlify.app",
 		subdomain: "plugins",
+		permalink: `{{ page.filePathStem | replace("README", "index") }}.html`,
 	};
 
 	for (let p in data) {
