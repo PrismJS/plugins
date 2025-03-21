@@ -1,10 +1,8 @@
+import baseComputed from "prismjs-website/_data/eleventyComputed.js";
+
 export default {
-	plugins (data) {
-		return data.components.plugins;
-	},
-	themes (data) {
-		return data.components.themes;
-	},
+	plugins: baseComputed.plugins,
+	themes: baseComputed.themes,
 	id (data) {
 		let parts = data.page.inputPath.slice(2).split("/");
 		if (parts.length === 1) {

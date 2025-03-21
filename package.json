@@ -4,6 +4,7 @@
 	"description": "Prism plugins",
 	"type": "module",
 	"scripts": {
+		"postinstall": "npm install --prefix node_modules/prismjs-website",
 		"build:html": "npx @11ty/eleventy --config=_build/eleventy.js --quiet",
 		"build": "npm run build:html",
 		"watch:html": "npx @11ty/eleventy --config=_build/eleventy.js --serve --quiet",
@@ -27,6 +28,7 @@
 		"prettier": "^3.5.3",
 		"prettier-plugin-brace-style": "^0.7.2",
 		"prettier-plugin-merge": "^0.7.2",
-		"prettier-plugin-space-before-function-paren": "^0.0.5"
+		"prettier-plugin-space-before-function-paren": "^0.0.7",
+		"prismjs-website": "github:PrismJS/website#eleventy"
 	}
 }

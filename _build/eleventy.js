@@ -1,51 +1,27 @@
-import markdownItAnchor from "markdown-it-anchor";
-import markdownItAttrs from "markdown-it-attrs";
-import markdownItDeflist from "markdown-it-deflist";
-import pluginTOC from "eleventy-plugin-toc";
-import * as filters from "./filters.js";
+import baseConfig from "prismjs-website/_build/eleventy.js";
 
 export default config => {
+	let base = baseConfig(config);
+
+	config.ignores.add("README.md");
+
 	let data = {
-		layout: "page.njk",
-		isPlugin: true,
-		permalink: `{{ page.filePathStem | replace("README", "index") }}.html`,
+		// TODO: change to https://prismjs.com when ready
+		base_url: "https://deploy-preview-16--prismjs-website.netlify.app",
+		subdomain: "plugins",
 	};
 
 	for (let p in data) {
 		config.addGlobalData(p, data[p]);
 	}
 
-	for (let f in filters) {
-		config.addFilter(f, filters[f]);
-	}
-
-	config.amendLibrary("md", md => {
-		md.options.typographer = true;
-		md.options.linkify = true;
-		md.use(markdownItAnchor, {
-			permalink: markdownItAnchor.permalink.headerLink(),
-		});
-		md.use(markdownItAttrs);
-		md.use(markdownItDeflist);
-
-		// Allow setting attributes on the outer <pre>, not the inner <code>
-		md.renderer.rules.fence = function (tokens, idx, options, env, slf) {
-			let token = tokens[idx];
-			let lang = token.info ? `class="language-${ token.info }"` : "";
-			let content = md.utils.escapeHtml(token.content).trim();
-			return `<pre ${ slf.renderAttrs(token) }><code ${ lang }>${ content }</code></pre>`;
-		};
-	});
-
-	config.addPlugin(pluginTOC, {
-		tags: ["h1", "h2", "h3"],
-	});
-
 	return {
-		markdownTemplateEngine: "njk",
-		templateFormats: ["md", "njk"],
+		...base,
 		dir: {
-			output: ".",
+			...base.dir,
+			input: ".",
+			includes: "./node_modules/prismjs-website/_includes",
+			layouts: "./node_modules/prismjs-website/_layouts",
 		},
 	};
 };
