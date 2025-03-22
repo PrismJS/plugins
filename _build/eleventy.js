@@ -6,6 +6,7 @@ export default config => {
 	config.ignores.add("README.md");
 
 	let data = {
+		base: "..",
 		// TODO: change to https://prismjs.com when ready
 		base_url: "https://deploy-preview-16--prismjs-website.netlify.app",
 		subdomain: "plugins",

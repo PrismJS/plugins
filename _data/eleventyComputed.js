@@ -40,10 +40,10 @@ export default {
 			return resources;
 		}
 
-		resources = [ ...(resources ?? []), `./prism-${id}.min.js { ${ attributes || "" } }` ];
+		resources = [ ...(resources ?? []), `${id}/prism-${id}.min.js { ${ attributes || "" } }` ];
 
 		if (data.hasCSS) {
-			resources.push(`./prism-${id}.min.css`);
+			resources.push(`${id}/prism-${id}.min.css`);
 		}
 
 		return resources;
