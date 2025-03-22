@@ -40,7 +40,11 @@ export default {
 			return resources;
 		}
 
-		resources = [ ...(resources ?? []), `${id}/prism-${id}.min.js { ${ attributes || "" } }` ];
+		if (!Array.isArray(resources)) {
+			resources = resources ? [resources] : [];
+		}
+
+		resources = [ ...resources, `${id}/prism-${id}.min.js { ${ attributes || "" } }` ];
 
 		if (data.hasCSS) {
 			resources.push(`${id}/prism-${id}.min.css`);
