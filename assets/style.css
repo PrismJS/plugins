@@ -1,0 +1,7 @@
+@media (max-width: 1300px) {
+	[data-page="/"] {
+		#theme > label::before {
+			display: block;
+		}
+	}
+}
