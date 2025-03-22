@@ -33,4 +33,19 @@ export default {
 		let { plugins, id } = data;
 		return !plugins?.[id]?.noCSS;
 	},
+	resources (data) {
+		let { id, resources, attributes } = data;
+
+		if (!id) {
+			return resources;
+		}
+
+		resources = [ ...(resources ?? []), `./prism-${id}.min.js { ${ attributes || "" } }` ];
+
+		if (data.hasCSS) {
+			resources.push(`./prism-${id}.min.css`);
+		}
+
+		return resources;
+	},
 };
