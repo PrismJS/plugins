@@ -4,7 +4,7 @@
 	"description": "Prism plugins",
 	"type": "module",
 	"scripts": {
-		"postinstall": "npm install --prefix node_modules/prismjs-website",
+		"dependencies": "npm install --prefix node_modules/prismjs-website",
 		"build:html": "npx @11ty/eleventy --config=_build/eleventy.js --quiet",
 		"build": "npm run build:html",
 		"watch:html": "npx @11ty/eleventy --config=_build/eleventy.js --serve --quiet",
