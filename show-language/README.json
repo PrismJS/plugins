@@ -1,0 +1,6 @@
+{
+	"resources": {
+		"head": "../toolbar/prism-toolbar.css",
+		"body": "../toolbar/prism-toolbar.js"
+	}
+}
