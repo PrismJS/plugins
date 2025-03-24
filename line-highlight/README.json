@@ -1,0 +1,6 @@
+{
+	"resources": {
+		"head": "../line-numbers/prism-line-numbers.css",
+		"body": "../line-numbers/prism-line-numbers.js"
+	}
+}
