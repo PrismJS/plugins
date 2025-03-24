@@ -1,3 +1,5 @@
 {
-	"resources": "../autolinker/prism-autolinker.css"
+	"resources": {
+		"head": "../autolinker/prism-autolinker.css"
+	}
 }

@@ -1,10 +1,14 @@
 {
-	"attributes": "data-autoloader-path='https://dev.prismjs.com/components/'",
-	"resources": [
-		"https://dev.prismjs.com/components.js",
-		"https://staging.prismjs.com/assets/vendor/jszip.min.js",
-		"https://staging.prismjs.com/assets/vendor/FileSaver.min.js",
-		"./style.css",
-		"./script.js"
-	]
+	"autoloader": false,
+	"exclude_js": true,
+	"resources": {
+		"head": "./style.css",
+		"body": [
+			"https://dev.prismjs.com/components.js",
+			"https://staging.prismjs.com/assets/vendor/jszip.min.js",
+			"https://staging.prismjs.com/assets/vendor/FileSaver.min.js",
+			"./prism-autoloader.js { data-autoloader-path='https://dev.prismjs.com/components/' }",
+			"./script.js"
+		]
+	}
 }

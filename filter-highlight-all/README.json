@@ -1,3 +1,5 @@
 {
-	"resources": ["./script.js { defer }", "https://dev.prismjs.com/components/prism-typescript.js"]
+	"resources": {
+		"body": "./script.js { defer }"
+	}
 }
