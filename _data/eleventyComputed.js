@@ -51,11 +51,11 @@ export default {
 		}
 
 		if (!data.exclude_js) {
-			ret.body.push(`./prism-${id}.min.js`);
+			ret.body.push(`./prism-${id}.js`);
 		}
 
 		if (data.hasCSS && !data.exclude_css) {
-			ret.head.push(`./prism-${id}.min.css`);
+			ret.head.push(`./prism-${id}.css`);
 		}
 
 		return ret;
