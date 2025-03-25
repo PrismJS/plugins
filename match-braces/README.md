@@ -22,7 +22,7 @@ To enable rainbow braces, simply add the `rainbow-braces` class to a code block.
 
 </section>
 
-<section class="match-braces">
+<section class="match-braces language-none">
 
 # Examples
 

@@ -32,7 +32,7 @@ Optional: To support multiline line numbers using soft wrap, apply the CSS `whit
 
 </section>
 
-<section class="line-numbers">
+<section class="line-numbers language-none">
 
 # Examples
 

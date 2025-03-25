@@ -1,4 +1,4 @@
-<section>
+<section class="language-none">
 
 # How to use
 
@@ -13,7 +13,7 @@ The [Autoloader plugin](/autoloader) understands the `language-diff-xxxx` format
 
 </section>
 
-<section>
+<section class="language-none">
 
 # Example
 

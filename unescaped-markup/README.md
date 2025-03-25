@@ -1,4 +1,4 @@
-<section>
+<section class="language-markup">
 
 # How to use
 
@@ -24,7 +24,7 @@ This will only work if the `code` element contains exactly one comment and nothi
 
 </section>
 
-<section>
+<section class="language-markup">
 
 # Examples
 
@@ -138,7 +138,7 @@ View source to see that the following didn’t need escaping (except for <code>&
 
 </section>
 
-<section>
+<section class="language-markup">
 
 # FAQ
 

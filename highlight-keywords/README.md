@@ -8,7 +8,7 @@
 	}
 </style>
 
-<section>
+<section class="language-none">
 
 # How to use
 
@@ -24,7 +24,7 @@ For example, the keyword `if` will have the class `keyword-if` added. A CSS rule
 
 </section>
 
-<section>
+<section class="language-none">
 
 # Examples
 
