@@ -1,3 +1,6 @@
+---
+layout: null
+---
 <body>
 <section id="main" class="language-javascript">
 
@@ -6,7 +9,7 @@
 	<code>
 
 
-		var example = {
+		let example = {
 			foo: true,
 
 			bar: false
@@ -22,7 +25,7 @@
 	<code>
 
 
-		var there_is_a_very_very_very_very_long_line_it_can_break_it_for_you = true;
+		let there_is_a_very_very_very_very_long_line_it_can_break_it_for_you = true;
 
 		if (there_is_a_very_very_very_very_long_line_it_can_break_it_for_you === true) {
 		};
@@ -35,14 +38,14 @@
 </section>
 
 <script src="https://dev.prismjs.com/prism.js"></script>
-<script src="normalize-whitespace/prism-normalize-whitespace.js"></script>
-<script type="text/javascript">
+<script src="./prism-normalize-whitespace.js"></script>
+<script>
 // Optional
 Prism.plugins.NormalizeWhitespace.setDefaults({
-	'remove-trailing': true,
-	'remove-indent': true,
-	'left-trim': true,
-	'right-trim': true,
+	"remove-trailing": true,
+	"remove-indent": true,
+	"left-trim": true,
+	"right-trim": true,
 });
 </script>
 </body>
