@@ -1,6 +1,4 @@
 {
 	"body_classes": "language-markup",
-	"resources": {
-		"body": "../keep-markup/prism-keep-markup.js"
-	}
+	"resources": "../keep-markup/prism-keep-markup.js"
 }

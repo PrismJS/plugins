@@ -1,11 +1,9 @@
 {
-	"resources": {
-		"body": [
-			"https://dev.prismjs.com/components/prism-css-extras.js",
-			"https://dev.prismjs.com/components/prism-less.js",
-			"https://dev.prismjs.com/components/prism-sass.js",
-			"https://dev.prismjs.com/components/prism-scss.js",
-			"https://dev.prismjs.com/components/prism-stylus.js"
-		]
-	}
+	"resources": [
+		"https://dev.prismjs.com/components/prism-css-extras.js",
+		"https://dev.prismjs.com/components/prism-less.js",
+		"https://dev.prismjs.com/components/prism-sass.js",
+		"https://dev.prismjs.com/components/prism-scss.js",
+		"https://dev.prismjs.com/components/prism-stylus.js"
+	]
 }

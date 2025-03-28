@@ -1,5 +1,3 @@
 {
-	"resources": {
-		"body": "https://dev.prismjs.com/components/prism-css-extras.js"
-	}
+	"resources": "https://dev.prismjs.com/components/prism-css-extras.js"
 }

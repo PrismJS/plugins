@@ -1,6 +1,4 @@
 {
 	"body_classes": "language-markup",
-	"resources": {
-		"body": "./script.js { defer }"
-	}
+	"resources": "./script.js { defer }"
 }

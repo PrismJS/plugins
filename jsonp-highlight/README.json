@@ -1,10 +1,3 @@
 {
-	"exclude_js": true,
-	"resources": {
-		"body": [
-			"./prism-jsonp-highlight.js",
-			"<script>function dump_json (x) { return `using dump_json: ${ JSON.stringify(x, null, 2) }`; }</script>",
-			"<script>Prism.plugins.jsonphighlight.registerAdapter(x => `using registerAdapter: ${ JSON.stringify(x, null, 2) }`);</script>"
-		]
-	}
+	"resources": "./script.js { defer }"
 }

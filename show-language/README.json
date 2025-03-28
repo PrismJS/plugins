@@ -1,6 +1,3 @@
 {
-	"resources": {
-		"head": "../toolbar/prism-toolbar.css",
-		"body": "../toolbar/prism-toolbar.js"
-	}
+	"resources": ["../toolbar/prism-toolbar.css", "../toolbar/prism-toolbar.js"]
 }

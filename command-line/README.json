@@ -1,10 +1,7 @@
 {
-	"autoloader": false,
-	"resources": {
-		"body": [
-			"https://dev.prismjs.com/components/prism-bash.js",
-			"https://dev.prismjs.com/components/prism-powershell.js",
-			"https://dev.prismjs.com/components/prism-sql.js"
-		]
-	}
+	"resources": [
+		"https://dev.prismjs.com/components/prism-bash.js",
+		"https://dev.prismjs.com/components/prism-powershell.js",
+		"https://dev.prismjs.com/components/prism-sql.js"
+	]
 }

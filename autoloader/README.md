@@ -1,3 +1,19 @@
+<style>
+	.download-grammars {
+		font: inherit;
+		border: 0;
+		padding: 0;
+		margin: 0;
+		background: none;
+		text-decoration: underline;
+		cursor: pointer;
+
+		&.loading:after {
+			content: " [Generating... " attr(data-progress) "%]";
+		}
+	}
+</style>
+
 <section class="language-javascript">
 
 # How to use

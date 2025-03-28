@@ -1,0 +1,3 @@
+{
+	"resources": "../autoloader/prism-autoloader.js { data-autoloader-path='https://dev.prismjs.com/components/' }"
+}
