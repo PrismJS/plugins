@@ -34,28 +34,21 @@ export default {
 		return !plugins?.[id]?.noCSS;
 	},
 	resources (data) {
-		let { id, resources } = data;
-		let ret = { head: [], body: [] };
+		let { id, resources = [] } = data;
+		let ret = [];
 
-		for (let to in resources) {
-			let array = resources[to];
-			if (!Array.isArray(array)) {
-				array = [array];
-			}
-
-			ret[to].push(...array);
-		}
+		resources = Array.isArray(resources) ? resources : [resources];
+		ret.push(...resources);
 
 		if (!id) {
 			return ret;
 		}
 
-		if (!data.exclude_js) {
-			ret.body.push(`./prism-${id}.js`);
-		}
+		let attributes = data.script_attributes ? `{ ${ data.script_attributes } }` : "";
+		ret.push(`./prism-${id}.js ${attributes}`);
 
-		if (data.hasCSS && !data.exclude_css) {
-			ret.head.push(`./prism-${id}.css`);
+		if (data.hasCSS) {
+			ret.push(`./prism-${id}.css`);
 		}
 
 		return ret;
