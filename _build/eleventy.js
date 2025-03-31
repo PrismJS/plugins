@@ -6,7 +6,7 @@ export default config => {
 	let data = {
 		layout: "plugin.njk",
 		// TODO: change to https://prismjs.com when ready
-		base_url: "https://deploy-preview-16--prismjs-website.netlify.app",
+		base_url: "https://staging.prismjs.com",
 		subdomain: "plugins",
 		permalink: `{{ page.filePathStem | replace("README", "index") }}.html`,
 	};
