@@ -1,5 +1,4 @@
 {
-	"script_attributes": "data-autoloader-path='https://dev.prismjs.com/components/'",
 	"resources": [
 		"https://dev.prismjs.com/components.js",
 		"https://prismjs.com/assets/vendor/jszip.min.js",

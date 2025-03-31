@@ -1,7 +1,7 @@
 {
 	"body_classes": "language-text",
 	"resources": [
-		"../autoloader/prism-autoloader.js { data-autoloader-path='https://dev.prismjs.com/components/' }",
+		"../autoloader/prism-autoloader.js",
 		"../toolbar/prism-toolbar.css",
 		"../toolbar/prism-toolbar.js"
 	]
