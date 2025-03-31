@@ -29,6 +29,6 @@
 		"prettier-plugin-brace-style": "^0.7.2",
 		"prettier-plugin-merge": "^0.7.3",
 		"prettier-plugin-space-before-function-paren": "^0.0.7",
-		"prismjs-website": "github:PrismJS/website#eleventy"
+		"prismjs-website": "github:PrismJS/website"
 	}
 }
