@@ -44,8 +44,7 @@ export default {
 			return ret;
 		}
 
-		let attributes = data.script_attributes ? `{ ${ data.script_attributes } }` : "";
-		ret.push(`./prism-${id}.js ${attributes}`);
+		ret.push(`./prism-${id}.js`);
 
 		if (data.hasCSS) {
 			ret.push(`./prism-${id}.css`);
