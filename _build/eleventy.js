@@ -3,8 +3,6 @@ import baseConfig from "prismjs-website/_build/eleventy.js";
 export default config => {
 	let base = baseConfig(config);
 
-	config.ignores.add("README.md");
-
 	let data = {
 		layout: "plugin.njk",
 		// TODO: change to https://prismjs.com when ready
