@@ -7,8 +7,10 @@
 		"dependencies": "npm install --prefix node_modules/prismjs-website",
 		"build:html": "npx @11ty/eleventy --config=_build/eleventy.js --quiet",
 		"build": "npm run build:html",
-		"watch:html": "npx @11ty/eleventy --config=_build/eleventy.js --serve --quiet",
-		"watch": "npm run watch:html"
+		"watch:html": "npx @11ty/eleventy --config=_build/eleventy.js --watch --quiet --incremental",
+		"watch": "npm run watch:html",
+		"dev": "netlify dev -p 8844",
+		"serve": "npx @11ty/eleventy --config=_build/eleventy.js --serve --quiet"
 	},
 	"repository": {
 		"type": "git",
