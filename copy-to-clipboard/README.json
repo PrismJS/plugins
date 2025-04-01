@@ -1,0 +1,8 @@
+{
+	"body_classes": "language-text",
+	"resources": [
+		"../autoloader/prism-autoloader.js",
+		"../toolbar/prism-toolbar.css",
+		"../toolbar/prism-toolbar.js"
+	]
+}

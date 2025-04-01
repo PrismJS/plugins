@@ -1,0 +1,4 @@
+{
+	"body_classes": "language-markup",
+	"resources": "./script.js { defer }"
+}
