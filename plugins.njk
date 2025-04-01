@@ -22,8 +22,8 @@ eleventyExcludeFromCollections: true
 		"title": "{{ title }}",
 		"description": "{{ description | escape_quotes | safe }}",
 		"owner": "{{ owner }}"{% if require %},
-		"require": {{ require | dump | safe }}{% elseif optional %},
-		"optional": {{ optional | dump | safe }}{% elseif noCSS %},
+		"require": {{ require | dump | safe }}{% endif %}{% if optional %},
+		"optional": {{ optional | dump | safe }}{% endif %}{% if noCSS %},
 		"noCSS": {{ noCSS -}}
 		{% endif %}
 	}{{ "," if not loop.last }}
