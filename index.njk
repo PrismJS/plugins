@@ -1,0 +1,26 @@
+---
+toc: false
+---
+
+<section>
+
+<h1>Available plugins</h1>
+
+<ul class="plugin-list">
+	{% for id, plugin in plugins -%}
+	<li>
+		<a href="{{ id }}">{{ plugin.title }}</a>
+		<div>{{ plugin.description | safe }}</div>
+	</li>
+	{% endfor -%}
+</ul>
+
+</section>
+
+<section>
+
+<h1>Contribute</h1>
+
+<p>Writing Prism plugins is easy! Read how at the “<a href="https://prismjs.com/extending.html#writing-plugins">Extending Prism</a>” section.</p>
+
+</section>

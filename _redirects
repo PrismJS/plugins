@@ -1,0 +1,2 @@
+# FIXME: see https://github.com/PrismJS/website/issues/18
+/autoloader/components/* https://dev.prismjs.com/components/:splat 301
