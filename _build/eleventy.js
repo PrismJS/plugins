@@ -6,6 +6,7 @@ export default config => {
 
 	let data = {
 		layout: "plugin.njk",
+		tags: ["plugin"],
 		// TODO: change to https://prismjs.com when ready
 		base_url: "https://staging.prismjs.com",
 		subdomain: "plugins",
