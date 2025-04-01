@@ -1,7 +1,6 @@
 import baseComputed from "prismjs-website/_data/eleventyComputed.js";
 
 export default {
-	plugins: baseComputed.plugins,
 	themes: baseComputed.themes,
 	id (data) {
 		let parts = data.page.inputPath.slice(2).split("/");
@@ -13,25 +12,21 @@ export default {
 		// Folder name ↔ plugin id
 		return parts[0];
 	},
-	title (data) {
-		if (data.title) {
-			return data.title;
+	optional (data) {
+		let optional = data?.optional;
+		if (!optional) {
+			return;
 		}
 
-		let { plugins, id } = data;
-		return plugins?.[id]?.title;
+		return Array.isArray(optional) ? optional : [optional];
 	},
-	description (data) {
-		if (data.description) {
-			return data.description;
+	require (data) {
+		let require = data?.require;
+		if (!require) {
+			return;
 		}
 
-		let { plugins, id } = data;
-		return plugins?.[id]?.description;
-	},
-	hasCSS (data) {
-		let { plugins, id } = data;
-		return !plugins?.[id]?.noCSS;
+		return Array.isArray(require) ? require : [require];
 	},
 	resources (data) {
 		let { id, resources = [] } = data;
@@ -46,7 +41,7 @@ export default {
 
 		ret.push(`./prism-${id}.js`);
 
-		if (data.hasCSS) {
+		if (!data.noCSS) {
 			ret.push(`./prism-${id}.css`);
 		}
 
