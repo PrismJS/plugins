@@ -1,3 +1,10 @@
+---
+title: Match braces
+description: Highlights matching braces.
+owner: RunDevelopment
+resources: ../autoloader/prism-autoloader.js
+---
+
 <section class="language-markup">
 
 # How to use

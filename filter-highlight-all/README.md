@@ -1,3 +1,13 @@
+---
+title: Filter highlightAll
+description: Filters the elements the <code>highlightAll</code> and <code>highlightAllUnder</code> methods actually highlight.
+owner: RunDevelopment
+noCSS: true
+resources:
+  - https://dev.prismjs.com/components/prism-typescript.js
+  - ./script.js { defer }
+---
+
 <style>
 	dt { font-size: 100%; }
 </style>

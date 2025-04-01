@@ -1,3 +1,10 @@
+---
+title: Highlight Keywords
+description: Adds special CSS classes for each keyword for fine-grained highlighting.
+owner: vkbansal
+noCSS: true
+---
+
 <style>
 	/*
 	 * Custom keyword styles

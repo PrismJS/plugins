@@ -1,3 +1,14 @@
+---
+title: Download Button
+description: A button in the toolbar of a code block adding a convenient way to download a code file.
+owner: Golmote
+require: toolbar
+noCSS: true
+resources:
+  - ../toolbar/prism-toolbar.css
+  - ../toolbar/prism-toolbar.js
+---
+
 <section class="language-markup">
 
 # How to use

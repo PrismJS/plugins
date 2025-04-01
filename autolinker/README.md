@@ -1,3 +1,9 @@
+---
+title: Autolinker
+description: Converts URLs and emails in code to clickable links. Parses Markdown links in comments.
+owner: LeaVerou
+---
+
 <section>
 
 # How to use

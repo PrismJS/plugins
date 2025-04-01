@@ -1,3 +1,11 @@
+---
+title: Inline Color
+description: Adds a small inline preview for colors in style sheets.
+owner: RunDevelopment
+require: css-extras
+resources: https://dev.prismjs.com/components/prism-css-extras.js
+---
+
 <section>
 
 # Examples

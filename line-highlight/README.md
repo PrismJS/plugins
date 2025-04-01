@@ -1,3 +1,12 @@
+---
+title: Line Highlight
+description: Highlights specific lines and/or line ranges.
+owner: LeaVerou
+resources:
+  - ../line-numbers/prism-line-numbers.css
+  - ../line-numbers/prism-line-numbers.js
+---
+
 <section class="language-markup">
 
 # How to use
