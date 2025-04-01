@@ -3,42 +3,29 @@ layout: null
 permalink: plugins.json
 eleventyExcludeFromCollections: true
 ---
-
-{%- macro plugin_meta (plugin) %}
-	{%- set id = plugin.id -%}
-	{%- set title = plugin.title -%}
-	{%- set description = plugin.description -%}
-	{%- set owner = plugin.owner -%}
-	{%- set optional = plugin.optional -%}
-	{%- set require = plugin.require -%}
-	{%- set noCSS = plugin.noCSS -%}
-
-	"{{ id }}": {
-		"title": "{{ title }}",
-		"description": "{{ description | escape_quotes | safe }}",
-		"owner": "{{ owner }}"{% if require %},
-		"require": [
-			{%- for id in require -%}
-				"{{ id }}"{{ ", " if not loop.last }}
-			{%- endfor -%}
-		]{% elseif optional %},
-		"optional": [
-			{%- for id in optional -%}
-				"{{ id }}"{{ ", " if not loop.last }}
-			{%- endfor -%}
-		]{% elseif noCSS %},
-		"noCSS": {{ noCSS }}
-		{% endif %}
-	}
-{%- endmacro -%}
-
 {
 	"meta": {
 		"path": "{id}/prism-{id}",
 		"link": "{id}/",
 		"domain": "https://{{ subdomain }}.prismjs.com/"
 	},
-{%- for plugin in collections.plugin %}
-	{{ plugin_meta(plugin.data) -}}{{- "," if not loop.last -}}
-{% endfor %}
+	{% for plugin in collections.plugin %}
+	{%- set id = plugin.data.id -%}
+	{%- set title = plugin.data.title -%}
+	{%- set description = plugin.data.description -%}
+	{%- set owner = plugin.data.owner -%}
+	{%- set optional = plugin.data.optional -%}
+	{%- set require = plugin.data.require -%}
+	{%- set noCSS = plugin.data.noCSS -%}
+
+	"{{ id }}": {
+		"title": "{{ title }}",
+		"description": "{{ description | escape_quotes | safe }}",
+		"owner": "{{ owner }}"{% if require %},
+		"require": {{ require | dump | safe }}{% elseif optional %},
+		"optional": {{ optional | dump | safe }}{% elseif noCSS %},
+		"noCSS": {{ noCSS -}}
+		{% endif %}
+	}{{ "," if not loop.last }}
+	{% endfor %}
 }
