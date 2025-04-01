@@ -1,4 +1,9 @@
 {
+	"title": "Copy to Clipboard",
+	"description": "Add a button that copies the code block to the clipboard when clicked.",
+	"owner": "mAAdhaTTah",
+	"require": "toolbar",
+	"noCSS": true,
 	"body_classes": "language-text",
 	"resources": [
 		"../autoloader/prism-autoloader.js",

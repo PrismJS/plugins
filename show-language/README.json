@@ -1,3 +1,8 @@
 {
+	"title": "Show Language",
+	"description": "Display the highlighted language in code blocks (inline code does not show the label).",
+	"owner": "nauzilus",
+	"require": "toolbar",
+	"noCSS": true,
 	"resources": ["../toolbar/prism-toolbar.css", "../toolbar/prism-toolbar.js"]
 }
