@@ -13,8 +13,8 @@ eleventyExcludeFromCollections: true
 	{%- set meta = plugin.data -%}
 
 	"{{ meta.id }}": {
-		"title": {{ meta.title | md | dump | safe }},
-		"description": {{ meta.description | md | dump | safe }},
+		"title": "{{ meta.title | md | replace('"', '\\"') }}",
+		"description": "{{ meta.description | md | replace('"', '\\"') }}",
 		"owner": "{{ meta.owner }}"
 		{%- if meta.require %},
 		"require": {{ meta.require | dump | safe -}}

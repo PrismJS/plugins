@@ -12,8 +12,8 @@ eleventyExcludeFromCollections: true
 	{%- set meta = plugin.data -%}
 
 	<li>
-		<a href="{{ meta.id }}">{{ meta.title | md | safe }}</a>
-		<div>{{ meta.description | md | safe }}</div>
+		<a href="{{ meta.id }}">{{ meta.title | md }}</a>
+		<div>{{ meta.description | md }}</div>
 	</li>
 	{% endfor -%}
 </ul>
