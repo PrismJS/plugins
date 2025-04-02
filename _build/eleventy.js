@@ -1,5 +1,6 @@
 import baseConfig from "prismjs-website/_build/eleventy.js";
 
+/** @param {import("@11ty/eleventy").UserConfig} config */
 export default config => {
 	let base = baseConfig(config);
 
