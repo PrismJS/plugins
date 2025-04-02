@@ -1,3 +1,11 @@
+---
+title: Keep Markup
+description: Prevents custom markup from being dropped out during highlighting.
+owner: Golmote
+optional: normalize-whitespace
+noCSS: true
+---
+
 <style>
 	:where(pre, code)[class*="language-"] mark {
 		display: inline-block;

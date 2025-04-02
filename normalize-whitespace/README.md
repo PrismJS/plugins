@@ -1,3 +1,13 @@
+---
+title: Normalize Whitespace
+description: Supports multiple operations to normalize whitespace in code blocks.
+owner: zeitgeist87
+optional: unescaped-markup
+noCSS: true
+body_classes: language-markup
+resources: ../keep-markup/prism-keep-markup.js
+---
+
 <style type="text/css">
 	:where(pre, code)[class*="language-"] mark {
 		display: inline-block;

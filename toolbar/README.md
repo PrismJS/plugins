@@ -1,3 +1,11 @@
+---
+title: Toolbar
+description: Attach a toolbar for plugins to easily register buttons on the top of a code block.
+owner: mAAdhaTTah
+body_classes: language-markup
+resources: ./script.js { defer }
+---
+
 <section data-toolbar-order="select-code,hello-world,label">
 
 # How to use

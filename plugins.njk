@@ -1,0 +1,30 @@
+---
+layout: null
+permalink: plugins.json
+eleventyExcludeFromCollections: true
+---
+{
+	"meta": {
+		"path": "{id}/prism-{id}",
+		"link": "{id}/",
+		"domain": "https://{{ subdomain }}.prismjs.com/"
+	},
+	{% for plugin in collections.plugin %}
+	{%- set meta = plugin.data -%}
+
+	"{{ meta.id }}": {
+		"title": "{{ meta.title | md | replace('"', '\\"') }}",
+		"description": "{{ meta.description | md | replace('"', '\\"') }}",
+		"owner": "{{ meta.owner }}"
+		{%- if meta.require %},
+		"require": {{ meta.require | dump | safe -}}
+		{% endif -%}
+		{%- if meta.optional %},
+		"optional": {{ meta.optional | dump | safe -}}
+		{% endif -%}
+		{%- if meta.noCSS %},
+		"noCSS": {{ meta.noCSS -}}
+		{% endif %}
+	}{{ "," if not loop.last }}
+	{% endfor %}
+}

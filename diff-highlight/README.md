@@ -1,3 +1,11 @@
+---
+title: Diff Highlight
+description: Highlight the code inside diff blocks.
+owner: RunDevelopment
+require: diff
+resources: ../autoloader/prism-autoloader.js
+---
+
 <section class="language-none">
 
 # How to use

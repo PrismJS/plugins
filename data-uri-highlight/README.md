@@ -1,3 +1,11 @@
+---
+title: Data URI Highlight
+description: Highlights data-URI contents.
+owner: Golmote
+noCSS: true
+resources: ../autolinker/prism-autolinker.css
+---
+
 <section>
 
 # How to use

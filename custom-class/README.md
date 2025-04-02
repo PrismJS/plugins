@@ -1,3 +1,11 @@
+---
+title: Custom Class
+description: This plugin allows you to prefix Prism's default classes (`.comment` can become `.namespace--comment`) or replace them with your defined ones (like `.editor__comment`). You can even add new classes.
+owner: dvkndn
+noCSS: true
+body_classes: language-javascript
+---
+
 <section>
 
 # Motivation

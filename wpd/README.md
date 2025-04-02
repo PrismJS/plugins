@@ -1,3 +1,9 @@
+---
+title: WebPlatform Docs
+description: Makes tokens link to [WebPlatform.org documentation](https://webplatform.github.io/docs/). The links open in a new tab.
+owner: LeaVerou
+---
+
 <section class="language-markup">
 
 # How to use

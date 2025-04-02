@@ -1,3 +1,13 @@
+---
+title: File Highlight
+description: Fetch external files and highlight them with Prism. Used on the Prism website itself.
+owner: LeaVerou
+noCSS: true
+resources:
+  - ../line-numbers/prism-line-numbers.css
+  - ../line-numbers/prism-line-numbers.js
+---
+
 <section class="language-markup">
 
 # How to use

@@ -1,3 +1,10 @@
+---
+title: Remove Initial Line Feed
+description: Removes the initial line feed in code blocks.
+owner: Golmote
+noCSS: true
+---
+
 <section class="language-markup">
 
 # How to use (DEPRECATED)
