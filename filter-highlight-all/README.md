@@ -1,6 +1,6 @@
 ---
 title: Filter highlightAll
-description: Filters the elements the <code>highlightAll</code> and <code>highlightAllUnder</code> methods actually highlight.
+description: Filters the elements the `highlightAll` and `highlightAllUnder` methods actually highlight.
 owner: RunDevelopment
 noCSS: true
 resources:

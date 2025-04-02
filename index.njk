@@ -9,13 +9,11 @@ eleventyExcludeFromCollections: true
 
 <ul class="plugin-list">
 	{% for plugin in collections.plugin -%}
-	{%- set id = plugin.data.id -%}
-	{%- set title = plugin.data.title -%}
-	{%- set description = plugin.data.description -%}
+	{%- set meta = plugin.data -%}
 
 	<li>
-		<a href="{{ id }}">{{ title }}</a>
-		<div>{{ description | safe }}</div>
+		<a href="{{ meta.id }}">{{ meta.title | md | safe }}</a>
+		<div>{{ meta.description | md | safe }}</div>
 	</li>
 	{% endfor -%}
 </ul>
