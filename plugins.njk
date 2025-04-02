@@ -10,21 +10,20 @@ eleventyExcludeFromCollections: true
 		"domain": "https://{{ subdomain }}.prismjs.com/"
 	},
 	{% for plugin in collections.plugin %}
-	{%- set id = plugin.data.id -%}
-	{%- set title = plugin.data.title -%}
-	{%- set description = plugin.data.description -%}
-	{%- set owner = plugin.data.owner -%}
-	{%- set optional = plugin.data.optional -%}
-	{%- set require = plugin.data.require -%}
-	{%- set noCSS = plugin.data.noCSS -%}
+	{%- set meta = plugin.data -%}
 
-	"{{ id }}": {
-		"title": "{{ title }}",
-		"description": "{{ description | escape_quotes | safe }}",
-		"owner": "{{ owner }}"{% if require %},
-		"require": {{ require | dump | safe }}{% endif %}{% if optional %},
-		"optional": {{ optional | dump | safe }}{% endif %}{% if noCSS %},
-		"noCSS": {{ noCSS -}}
+	"{{ meta.id }}": {
+		"title": "{{ meta.title }}",
+		"description": "{{ meta.description | escape_quotes | safe }}",
+		"owner": "{{ meta.owner }}"
+		{%- if meta.require %},
+		"require": {{ meta.require | dump | safe -}}
+		{% endif -%}
+		{%- if meta.optional %},
+		"optional": {{ meta.optional | dump | safe -}}
+		{% endif -%}
+		{%- if meta.noCSS %},
+		"noCSS": {{ meta.noCSS -}}
 		{% endif %}
 	}{{ "," if not loop.last }}
 	{% endfor %}
