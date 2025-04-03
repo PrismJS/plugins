@@ -1,0 +1,12 @@
+name: Rebuild Main Website
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  trigger-rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Netlify Build Hook
+        run: curl -X POST -d "{}" "${{ secrets.MAIN_WEBSITE_BUILD_HOOK_URL }}?trigger_title=The+plugins+repo+has+been+updated"
