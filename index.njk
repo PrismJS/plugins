@@ -1,5 +1,6 @@
 ---
 toc: false
+eleventyExcludeFromCollections: true
 ---
 
 <section>
@@ -7,10 +8,12 @@ toc: false
 <h1>Available plugins</h1>
 
 <ul class="plugin-list">
-	{% for id, plugin in plugins -%}
+	{% for plugin in collections.plugin -%}
+	{%- set meta = plugin.data -%}
+
 	<li>
-		<a href="{{ id }}">{{ plugin.title }}</a>
-		<div>{{ plugin.description | safe }}</div>
+		<a href="{{ meta.id }}">{{ meta.title | md }}</a>
+		<div>{{ meta.description | md }}</div>
 	</li>
 	{% endfor -%}
 </ul>

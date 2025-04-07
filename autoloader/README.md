@@ -1,3 +1,15 @@
+---
+title: Autoloader
+description: Automatically loads the needed languages to highlight the code blocks.
+owner: Golmote
+noCSS: true
+resources:
+  - https://dev.prismjs.com/components.js
+  - https://prismjs.com/assets/vendor/jszip.min.js
+  - https://prismjs.com/assets/vendor/FileSaver.min.js
+  - ./script.js
+---
+
 <style>
 	.download-grammars {
 		font: inherit;

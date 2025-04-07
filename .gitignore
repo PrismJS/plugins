@@ -6,6 +6,7 @@ Thumbs.db
 *.html
 *.min.js
 *.min.css
+plugins.json
 
 # Local Netlify folder
 .netlify

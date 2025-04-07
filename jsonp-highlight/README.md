@@ -1,3 +1,11 @@
+---
+title: JSONP Highlight
+description: Fetch content with JSONP and highlight some interesting content (e.g. GitHub/Gists or Bitbucket API).
+owner: nauzilus
+noCSS: true
+resources: ./script.js { defer }
+---
+
 <section class="language-markup">
 
 # How to use

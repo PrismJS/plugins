@@ -1,3 +1,12 @@
+---
+title: Show Invisibles
+description: Show hidden characters such as tabs and line breaks.
+owner: LeaVerou
+optional:
+  - autolinker
+  - data-uri-highlight
+---
+
 <section>
 
 # Examples
