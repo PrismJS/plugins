@@ -773,6 +773,8 @@ const previewers = {
 /* eslint-enable @typescript-eslint/no-unsafe-assignment */
 /* eslint-enable @typescript-eslint/no-unsafe-member-access */
 
+// TODO: Remove this once the plugins are ditched from the Prism repo
+// @ts-ignore
 export default {
 	id: 'previewers',
 	require: cssExtras,

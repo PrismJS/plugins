@@ -47,6 +47,8 @@ export class CustomClass {
 	}
 }
 
+// TODO: Remove this once the plugins are ditched from the Prism repo
+// @ts-ignore
 export default {
 	id: 'custom-class',
 	plugin () {

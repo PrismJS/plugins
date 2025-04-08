@@ -202,6 +202,8 @@ const label: ButtonFactory = env => {
 	return element;
 };
 
+// TODO: Remove this once the plugins are ditched from the Prism repo
+// @ts-ignore
 export default {
 	id: 'toolbar',
 	plugin () {

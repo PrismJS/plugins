@@ -72,6 +72,8 @@ export class FilterHighlightAll {
 	}
 }
 
+// TODO: Remove this once the plugins are ditched from the Prism repo
+// @ts-ignore
 export default {
 	id: 'filter-highlight-all',
 	plugin (Prism) {

@@ -103,6 +103,8 @@ export class Autoloader {
 	}
 }
 
+// TODO: Remove this once the plugins are ditched from the Prism repo
+// @ts-ignore
 export default {
 	id: 'autoloader',
 	plugin (Prism) {
