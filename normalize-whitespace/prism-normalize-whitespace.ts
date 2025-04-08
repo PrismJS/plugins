@@ -1,7 +1,7 @@
-import { getParentPre, isActive } from '../../shared/dom-util';
-import type { PluginProto } from '../../types';
+import { getParentPre, isActive } from 'prismjs/src/shared/dom-util';
+import type { PluginProto } from 'prismjs/src/types';
 
-function tabLength(str: string) {
+function tabLength (str: string) {
 	let res = 0;
 	for (let i = 0; i < str.length; ++i) {
 		if (str.charCodeAt(i) === '\t'.charCodeAt(0)) {
@@ -13,7 +13,7 @@ function tabLength(str: string) {
 
 interface NormalizeWhitespaceDefaults {
 	'break-lines': number;
-	'indent': number;
+	indent: number;
 	'left-trim': boolean;
 	'remove-indent': boolean;
 	'remove-initial-line-feed': boolean;
@@ -37,13 +37,15 @@ const normalizationOrder: readonly (keyof NormalizeWhitespaceDefaults)[] = [
 
 type Typeof<T> = T extends boolean ? 'boolean' : T extends number ? 'number' : string;
 
-const settingsConfig: Readonly<{ [K in keyof NormalizeWhitespaceDefaults]: Typeof<NormalizeWhitespaceDefaults[K]> }> = {
+const settingsConfig: Readonly<{
+	[K in keyof NormalizeWhitespaceDefaults]: Typeof<NormalizeWhitespaceDefaults[K]>;
+}> = {
 	'remove-trailing': 'boolean',
 	'remove-indent': 'boolean',
 	'left-trim': 'boolean',
 	'right-trim': 'boolean',
 	'break-lines': 'number',
-	'indent': 'number',
+	indent: 'number',
 	'remove-initial-line-feed': 'boolean',
 	'tabs-to-spaces': 'number',
 	'spaces-to-tabs': 'number',
@@ -52,7 +54,7 @@ const settingsConfig: Readonly<{ [K in keyof NormalizeWhitespaceDefaults]: Typeo
 /**
  * Reads normalizations settings from the given elements's `data-*` attributes.
  */
-function readSetting(element: Element) {
+function readSetting (element: Element) {
 	const settings: Partial<NormalizeWhitespaceDefaults> = {};
 	for (const key of normalizationOrder) {
 		const attr = element.getAttribute('data-' + key);
@@ -63,7 +65,8 @@ function readSetting(element: Element) {
 				if (typeof value === type) {
 					settings[key] = value as never;
 				}
-			} catch {
+			}
+			catch {
 				// ignore error
 			}
 		}
@@ -71,14 +74,19 @@ function readSetting(element: Element) {
 	return settings;
 }
 
-const normalizationMethods: { [K in keyof NormalizeWhitespaceDefaults]: (input: string, value: NormalizeWhitespaceDefaults[K]) => string } = {
-	'left-trim': (input) => input.replace(/^\s+/, ''),
-	'right-trim': (input) => input.replace(/(^|\S)\s+$/, '$1'),
+const normalizationMethods: {
+	[K in keyof NormalizeWhitespaceDefaults]: (
+		input: string,
+		value: NormalizeWhitespaceDefaults[K]
+	) => string;
+} = {
+	'left-trim': input => input.replace(/^\s+/, ''),
+	'right-trim': input => input.replace(/(^|\S)\s+$/, '$1'),
 	'tabs-to-spaces': (input, spaces) => input.replace(/\t/g, ' '.repeat(spaces)),
 	'spaces-to-tabs': (input, spaces) => input.replace(RegExp(` {${spaces}}`, 'g'), '\t'),
-	'remove-trailing': (input) => input.replace(/\s*?$/gm, ''),
-	'remove-initial-line-feed': (input) => input.replace(/^(?:\r?\n|\r)/, ''),
-	'remove-indent': (input) => {
+	'remove-trailing': input => input.replace(/\s*?$/gm, ''),
+	'remove-initial-line-feed': input => input.replace(/^(?:\r?\n|\r)/, ''),
+	'remove-indent': input => {
 		const indents = input.match(/^[^\S\n\r]*(?=\S)/gm);
 
 		if (!indents || !indents[0].length) {
@@ -93,7 +101,7 @@ const normalizationMethods: { [K in keyof NormalizeWhitespaceDefaults]: (input: 
 
 		return input.replace(RegExp('^' + indents[0], 'gm'), '');
 	},
-	'indent': (input, tabs) => input.replace(/^[^\S\n\r]*(?=\S)/gm, '\t'.repeat(tabs) + '$&'),
+	indent: (input, tabs) => input.replace(/^[^\S\n\r]*(?=\S)/gm, '\t'.repeat(tabs) + '$&'),
 	'break-lines': (input, characters) => {
 		const lines = input.split('\n');
 		for (let i = 0; i < lines.length; ++i) {
@@ -115,20 +123,20 @@ const normalizationMethods: { [K in keyof NormalizeWhitespaceDefaults]: (input: 
 			lines[i] = line.join('');
 		}
 		return lines.join('\n');
-	}
+	},
 };
 
 export class NormalizeWhitespace {
 	defaults: Partial<NormalizeWhitespaceDefaults>;
-	constructor(defaults: Partial<Readonly<NormalizeWhitespaceDefaults>>) {
+	constructor (defaults: Partial<Readonly<NormalizeWhitespaceDefaults>>) {
 		this.defaults = { ...defaults };
 	}
 
-	setDefaults(defaults: Partial<Readonly<NormalizeWhitespaceDefaults>>): void {
+	setDefaults (defaults: Partial<Readonly<NormalizeWhitespaceDefaults>>): void {
 		Object.assign(this.defaults, defaults);
 	}
 
-	normalize(input: string, settings?: Partial<Readonly<NormalizeWhitespaceDefaults>>): string {
+	normalize (input: string, settings?: Partial<Readonly<NormalizeWhitespaceDefaults>>): string {
 		settings = { ...this.defaults, ...settings };
 
 		for (const name of normalizationOrder) {
@@ -145,7 +153,7 @@ export class NormalizeWhitespace {
 export default {
 	id: 'normalize-whitespace',
 	optional: 'unescaped-markup',
-	plugin() {
+	plugin () {
 		return new NormalizeWhitespace({
 			'remove-trailing': true,
 			'remove-indent': true,
@@ -158,10 +166,10 @@ export default {
 				'spaces-to-tabs': 4*/
 		});
 	},
-	effect(Prism) {
+	effect (Prism) {
 		const Normalizer = Prism.plugins.normalizeWhitespace;
 
-		return Prism.hooks.add('before-sanity-check', (env) => {
+		return Prism.hooks.add('before-sanity-check', env => {
 			if (!env.code) {
 				return;
 			}
@@ -196,10 +204,12 @@ export default {
 
 				if (node === env.element) {
 					codeFound = true;
-				} else if (node.nodeName === '#text') {
+				}
+				else if (node.nodeName === '#text') {
 					if (codeFound) {
 						after += node.nodeValue;
-					} else {
+					}
+					else {
 						before += node.nodeValue;
 					}
 
@@ -211,12 +221,13 @@ export default {
 			if (!env.element.children.length || !Prism.components.has('keep-markup')) {
 				env.code = before + env.code + after;
 				env.code = Normalizer.normalize(env.code, settings);
-			} else {
+			}
+			else {
 				// Preserve markup for keep-markup plugin
 				const html = before + env.element.innerHTML + after;
 				env.element.innerHTML = Normalizer.normalize(html, settings);
 				env.code = env.element.textContent || '';
 			}
 		});
-	}
+	},
 } as PluginProto<'normalize-whitespace'>;

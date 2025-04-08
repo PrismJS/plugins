@@ -1,7 +1,7 @@
-import { setLanguage } from '../../shared/dom-util';
-import { addHooks } from '../../shared/hooks-util';
-import type { Prism } from '../../core';
-import type { PluginProto } from '../../types';
+import { setLanguage } from 'prismjs/src/shared/dom-util';
+import { addHooks } from 'prismjs/src/shared/hooks-util';
+import type { Prism } from 'prismjs/src/core';
+import type { PluginProto } from 'prismjs/src/types';
 
 const FAILURE_MESSAGE = (status: number, message: string) => {
 	return `✖ Error ${status} while fetching file: ${message}`;
@@ -14,17 +14,23 @@ const FAILURE_EMPTY_MESSAGE = '✖ Error: File does not exist or is empty';
  *
  * @param src The URL or path of the source file to load.
  */
-function loadFile(src: string, success: (result: string) => void, error: (reason: string) => void) {
+function loadFile (
+	src: string,
+	success: (result: string) => void,
+	error: (reason: string) => void
+) {
 	const xhr = new XMLHttpRequest();
 	xhr.open('GET', src, true);
 	xhr.onreadystatechange = function () {
 		if (xhr.readyState === 4) {
 			if (xhr.status < 400 && xhr.responseText) {
 				success(xhr.responseText);
-			} else {
+			}
+			else {
 				if (xhr.status >= 400) {
 					error(FAILURE_MESSAGE(xhr.status, xhr.statusText));
-				} else {
+				}
+				else {
 					error(FAILURE_EMPTY_MESSAGE);
 				}
 			}
@@ -34,15 +40,15 @@ function loadFile(src: string, success: (result: string) => void, error: (reason
 }
 
 const EXTENSIONS: Record<string, string | undefined> = {
-	'js': 'javascript',
-	'py': 'python',
-	'rb': 'ruby',
-	'ps1': 'powershell',
-	'psm1': 'powershell',
-	'sh': 'bash',
-	'bat': 'batch',
-	'h': 'c',
-	'tex': 'latex'
+	js: 'javascript',
+	py: 'python',
+	rb: 'ruby',
+	ps1: 'powershell',
+	psm1: 'powershell',
+	sh: 'bash',
+	bat: 'batch',
+	h: 'c',
+	tex: 'latex',
 };
 
 const STATUS_ATTR = 'data-src-status';
@@ -50,8 +56,17 @@ const STATUS_LOADING = 'loading';
 const STATUS_LOADED = 'loaded';
 const STATUS_FAILED = 'failed';
 
-const SELECTOR = 'pre[data-src]:not([' + STATUS_ATTR + '="' + STATUS_LOADED + '"])'
-	+ ':not([' + STATUS_ATTR + '="' + STATUS_LOADING + '"])';
+const SELECTOR =
+	'pre[data-src]:not([' +
+	STATUS_ATTR +
+	'="' +
+	STATUS_LOADED +
+	'"])' +
+	':not([' +
+	STATUS_ATTR +
+	'="' +
+	STATUS_LOADING +
+	'"])';
 
 export class FileHighlight {
 	private Prism: Prism;
@@ -59,7 +74,7 @@ export class FileHighlight {
 	/**
 	 * @package
 	 */
-	constructor(Prism: Prism) {
+	constructor (Prism: Prism) {
 		this.Prism = Prism;
 	}
 
@@ -70,7 +85,7 @@ export class FileHighlight {
 	 *
 	 * @param container Defaults to `document`.
 	 */
-	highlight(container: ParentNode = document) {
+	highlight (container: ParentNode = document) {
 		const elements = container.querySelectorAll(SELECTOR);
 
 		for (const element of elements) {
@@ -81,16 +96,18 @@ export class FileHighlight {
 
 export default {
 	id: 'file-highlight',
-	plugin(Prism) {
+	plugin (Prism) {
 		return new FileHighlight(Prism);
 	},
-	effect(Prism) {
+	effect (Prism) {
 		/**
 		 * Parses the given range.
 		 *
 		 * This returns a range with inclusive ends.
 		 */
-		function parseRange(range: string | null | undefined): [number, number | undefined] | undefined {
+		function parseRange (
+			range: string | null | undefined
+		): [number, number | undefined] | undefined {
 			const m = /^\s*(\d+)\s*(?:(,)\s*(?:(\d+)\s*)?)?$/.exec(range || '');
 			if (m) {
 				const start = Number(m[1]);
@@ -109,10 +126,10 @@ export default {
 		}
 
 		return addHooks(Prism.hooks, {
-			'before-highlightall': (env) => {
+			'before-highlightall': env => {
 				env.selector += ', ' + SELECTOR;
 			},
-			'before-sanity-check': (env) => {
+			'before-sanity-check': env => {
 				const pre = env.element as HTMLPreElement;
 
 				if (!pre.matches(SELECTOR)) {
@@ -131,7 +148,6 @@ export default {
 				// add code element with loading message
 				const code = pre.appendChild(document.createElement('CODE'));
 				code.textContent = LOADING_MESSAGE;
-
 
 				let language = env.language;
 				if (language === 'none') {
@@ -154,7 +170,7 @@ export default {
 				// load file
 				loadFile(
 					src,
-					(text) => {
+					text => {
 						// mark as loaded
 						pre.setAttribute(STATUS_ATTR, STATUS_LOADED);
 
@@ -167,9 +183,13 @@ export default {
 							let start = range[0];
 							let end = range[1] == null ? lines.length : range[1];
 
-							if (start < 0) { start += lines.length; }
+							if (start < 0) {
+								start += lines.length;
+							}
 							start = Math.max(0, Math.min(start - 1, lines.length));
-							if (end < 0) { end += lines.length; }
+							if (end < 0) {
+								end += lines.length;
+							}
 							end = Math.max(0, Math.min(end, lines.length));
 
 							text = lines.slice(start, end).join('\n');
@@ -184,14 +204,14 @@ export default {
 						code.textContent = text;
 						Prism.highlightElement(code);
 					},
-					(error) => {
+					error => {
 						// mark as failed
 						pre.setAttribute(STATUS_ATTR, STATUS_FAILED);
 
 						code.textContent = error;
 					}
 				);
-			}
+			},
 		});
-	}
+	},
 } as PluginProto<'file-highlight'>;

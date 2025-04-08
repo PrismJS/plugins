@@ -1,7 +1,7 @@
-import treeview from '../../languages/prism-treeview';
-import type { PluginProto } from '../../types';
+import treeview from 'prismjs/src/languages/prism-treeview';
+import type { PluginProto } from 'prismjs/src/types';
 
 export default {
 	id: 'treeview-icons',
-	require: treeview
+	require: treeview,
 } as PluginProto<'treeview-icons'>;
