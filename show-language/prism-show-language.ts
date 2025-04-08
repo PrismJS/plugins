@@ -1,16 +1,16 @@
-import { getParentPre } from '../../shared/dom-util';
-import { getTitle } from '../../shared/meta/title-data';
+import { getParentPre } from 'prismjs/src/shared/dom-util';
+import { getTitle } from 'prismjs/src/shared/meta/title-data';
 import toolbar from '../toolbar/prism-toolbar';
-import type { PluginProto } from '../../types';
+import type { PluginProto } from 'prismjs/src/types';
 
 export default {
 	id: 'show-language',
 	require: toolbar,
-	effect(Prism) {
+	effect (Prism) {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const toolbar = Prism.plugins.toolbar!;
 
-		return toolbar.registerButton('show-language', (env) => {
+		return toolbar.registerButton('show-language', env => {
 			const pre = getParentPre(env.element);
 			if (!pre) {
 				return;
@@ -25,5 +25,5 @@ export default {
 			element.textContent = title;
 			return element;
 		});
-	}
+	},
 } as PluginProto<'show-language'>;

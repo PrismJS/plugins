@@ -1,12 +1,12 @@
-import { isActive } from '../../shared/dom-util';
-import { addHooks } from '../../shared/hooks-util';
-import type { StateKey } from '../../core/hook-state';
-import type { PluginProto } from '../../types';
+import { isActive } from 'prismjs/src/shared/dom-util';
+import { addHooks } from 'prismjs/src/shared/hooks-util';
+import type { StateKey } from 'prismjs/src/core/hook-state';
+import type { PluginProto } from 'prismjs/src/types';
 
-function isElement(child: ChildNode): child is Element {
+function isElement (child: ChildNode): child is Element {
 	return child.nodeType === 1;
 }
-function isText(child: ChildNode): child is Text {
+function isText (child: ChildNode): child is Text {
 	return child.nodeType === 3;
 }
 
@@ -20,9 +20,9 @@ const markupData: StateKey<NodeData[]> = 'keep-markup data';
 export default {
 	id: 'keep-markup',
 	optional: 'normalize-whitespace',
-	effect(Prism) {
+	effect (Prism) {
 		return addHooks(Prism.hooks, {
-			'before-highlight': (env) => {
+			'before-highlight': env => {
 				if (!env.element.children.length) {
 					return;
 				}
@@ -35,8 +35,12 @@ export default {
 				/**
 				 * Returns whether the given element should be kept.
 				 */
-				function shouldKeep(element: Element) {
-					if (dropTokens && element.nodeName.toLowerCase() === 'span' && element.classList.contains('token')) {
+				function shouldKeep (element: Element) {
+					if (
+						dropTokens &&
+						element.nodeName.toLowerCase() === 'span' &&
+						element.classList.contains('token')
+					) {
 						return false;
 					}
 					return true;
@@ -44,7 +48,7 @@ export default {
 
 				let pos = 0;
 				const data: NodeData[] = [];
-				function processElement(element: Element) {
+				function processElement (element: Element) {
 					if (!shouldKeep(element)) {
 						// don't keep this element and just process its children
 						processChildren(element);
@@ -55,7 +59,7 @@ export default {
 						// Store original element so we can restore it after highlighting
 						element,
 						posOpen: pos,
-						posClose: NaN
+						posClose: NaN,
 					};
 					data.push(o);
 
@@ -63,12 +67,13 @@ export default {
 
 					o.posClose = pos;
 				}
-				function processChildren(element: Element) {
+				function processChildren (element: Element) {
 					for (let i = 0, l = element.childNodes.length; i < l; i++) {
 						const child = element.childNodes[i];
 						if (isElement(child)) {
 							processElement(child);
-						} else if (isText(child)) {
+						}
+						else if (isText(child)) {
 							pos += child.data.length;
 						}
 					}
@@ -80,28 +85,43 @@ export default {
 					env.state.set(markupData, data);
 				}
 			},
-			'after-highlight': (env) => {
+			'after-highlight': env => {
 				const data = env.state.get(markupData, []);
 				if (data.length) {
-					type End = [node: Text, pos: number]
+					type End = [node: Text, pos: number];
 
-					const walk = (elt: Element, nodeState: { node: NodeData, pos: number, start?: End, end?: End }) => {
+					const walk = (
+						elt: Element,
+						nodeState: { node: NodeData; pos: number; start?: End; end?: End }
+					) => {
 						for (let i = 0, l = elt.childNodes.length; i < l; i++) {
-
 							const child = elt.childNodes[i];
 
 							if (isElement(child)) {
 								if (!walk(child, nodeState)) {
 									return false;
 								}
-							} else if (isText(child)) {
-								if (!nodeState.start && nodeState.pos + child.data.length > nodeState.node.posOpen) {
+							}
+							else if (isText(child)) {
+								if (
+									!nodeState.start &&
+									nodeState.pos + child.data.length > nodeState.node.posOpen
+								) {
 									// We found the start position
-									nodeState.start = [child, nodeState.node.posOpen - nodeState.pos];
+									nodeState.start = [
+										child,
+										nodeState.node.posOpen - nodeState.pos,
+									];
 								}
-								if (nodeState.start && nodeState.pos + child.data.length >= nodeState.node.posClose) {
+								if (
+									nodeState.start &&
+									nodeState.pos + child.data.length >= nodeState.node.posClose
+								) {
 									// We found the end position
-									nodeState.end = [child, nodeState.node.posClose - nodeState.pos];
+									nodeState.end = [
+										child,
+										nodeState.node.posClose - nodeState.pos,
+									];
 								}
 
 								nodeState.pos += child.data.length;
@@ -125,13 +145,13 @@ export default {
 					};
 
 					// For each tag, we walk the DOM to reinsert it
-					data.forEach((node) => {
+					data.forEach(node => {
 						walk(env.element, { node, pos: 0 });
 					});
 					// Store new highlightedCode for later hooks calls
 					env.highlightedCode = env.element.innerHTML;
 				}
-			}
+			},
 		});
-	}
+	},
 } as PluginProto<'keep-markup'>;

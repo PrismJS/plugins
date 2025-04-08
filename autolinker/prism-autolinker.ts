@@ -1,33 +1,33 @@
-import { addHooks } from '../../shared/hooks-util';
-import { tokenizeStrings } from '../../shared/tokenize-strings';
-import type { PluginProto } from '../../types';
+import { addHooks } from 'prismjs/src/shared/hooks-util';
+import { tokenizeStrings } from 'prismjs/src/shared/tokenize-strings';
+import type { PluginProto } from 'prismjs/src/types';
 
 export default {
 	id: 'autolinker',
 	optional: 'diff-highlight',
-	effect(Prism) {
-		function balanced(chars: string) {
+	effect (Prism) {
+		function balanced (chars: string) {
 			return String.raw`(?:${chars}|\((?:${chars})*\))`;
 		}
 
 		const url = RegExp(
-			/\b(?:[a-z]{3,7}:\/\/|tel:)/.source
-			+ `${balanced(/[\w\-+%~/.:=&!$'*,;@]/.source)}+`
-			+ `(?:\\?${balanced(/[\w\-+%~/.:=&!$'*,;@?]/.source)}*)?`
-			+ `(?:#${balanced(/[\w\-+%~/.:=&!$'*,;@?#]/.source)}*)?`
+			/\b(?:[a-z]{3,7}:\/\/|tel:)/.source +
+				`${balanced(/[\w\-+%~/.:=&!$'*,;@]/.source)}+` +
+				`(?:\\?${balanced(/[\w\-+%~/.:=&!$'*,;@?]/.source)}*)?` +
+				`(?:#${balanced(/[\w\-+%~/.:=&!$'*,;@?#]/.source)}*)?`
 		);
 		const email = /\b\S+@[\w.]+[a-z]{2}/;
 
 		const links = {
 			'url-link': url,
-			'email-link': email
+			'email-link': email,
 		};
 
 		return addHooks(Prism.hooks, {
-			'after-tokenize': (env) => {
-				tokenizeStrings(env.tokens, (code) => Prism.tokenize(code, links));
+			'after-tokenize': env => {
+				tokenizeStrings(env.tokens, code => Prism.tokenize(code, links));
 			},
-			'wrap': (env) => {
+			wrap: env => {
 				if (env.type.endsWith('-link')) {
 					let href = env.content;
 
@@ -38,7 +38,7 @@ export default {
 					env.tag = 'a';
 					env.attributes.href = href;
 				}
-			}
+			},
 		});
-	}
+	},
 } as PluginProto<'autolinker'>;

@@ -1,5 +1,5 @@
 import toolbar from '../toolbar/prism-toolbar';
-import type { PluginProto } from '../../types';
+import type { PluginProto } from 'prismjs/src/types';
 
 interface CopyInfo {
 	getText: () => string;
@@ -9,7 +9,7 @@ interface CopyInfo {
 /**
  * When the given elements is clicked by the user, the given text will be copied to clipboard.
  */
-function registerClipboard(element: Element, copyInfo: CopyInfo) {
+function registerClipboard (element: Element, copyInfo: CopyInfo) {
 	element.addEventListener('click', () => {
 		copyTextToClipboard(copyInfo);
 	});
@@ -17,7 +17,7 @@ function registerClipboard(element: Element, copyInfo: CopyInfo) {
 
 // https://stackoverflow.com/a/30810322/7595472
 
-function fallbackCopyTextToClipboard(copyInfo: CopyInfo) {
+function fallbackCopyTextToClipboard (copyInfo: CopyInfo) {
 	const textArea = document.createElement('textarea');
 	textArea.value = copyInfo.getText();
 
@@ -35,11 +35,13 @@ function fallbackCopyTextToClipboard(copyInfo: CopyInfo) {
 		setTimeout(() => {
 			if (successful) {
 				copyInfo.success();
-			} else {
+			}
+			else {
 				copyInfo.error(undefined);
 			}
 		}, 1);
-	} catch (err) {
+	}
+	catch (err) {
 		setTimeout(() => {
 			copyInfo.error(err);
 		}, 1);
@@ -47,13 +49,14 @@ function fallbackCopyTextToClipboard(copyInfo: CopyInfo) {
 
 	document.body.removeChild(textArea);
 }
-function copyTextToClipboard(copyInfo: CopyInfo) {
+function copyTextToClipboard (copyInfo: CopyInfo) {
 	if (navigator.clipboard) {
 		navigator.clipboard.writeText(copyInfo.getText()).then(copyInfo.success, () => {
 			// try the fallback in case `writeText` didn't work
 			fallbackCopyTextToClipboard(copyInfo);
 		});
-	} else {
+	}
+	else {
 		fallbackCopyTextToClipboard(copyInfo);
 	}
 }
@@ -61,12 +64,12 @@ function copyTextToClipboard(copyInfo: CopyInfo) {
 /**
  * Selects the text content of the given element.
  */
-function selectElementText(element: Element) {
+function selectElementText (element: Element) {
 	// https://stackoverflow.com/a/20079910/7595472
 	window.getSelection()?.selectAllChildren(element);
 }
 
-function getInheritedAttribute(element: Element, attribute: string) {
+function getInheritedAttribute (element: Element, attribute: string) {
 	let e: Element | null = element;
 	for (; e; e = e.parentElement) {
 		const value = e.getAttribute(attribute);
@@ -89,12 +92,12 @@ interface Settings {
  * @param startElement An element to start from.
  * @returns The plugin settings.
  */
-function getSettings(startElement: Element) {
+function getSettings (startElement: Element) {
 	const settings: Settings = {
 		'copy': 'Copy',
 		'copy-error': 'Press Ctrl+C to copy',
 		'copy-success': 'Copied!',
-		'copy-timeout': 5000
+		'copy-timeout': 5000,
 	};
 
 	for (const k in settings) {
@@ -106,7 +109,8 @@ function getSettings(startElement: Element) {
 				if (!Number.isNaN(n)) {
 					settings[key] = n;
 				}
-			} else {
+			}
+			else {
 				settings[key] = value;
 			}
 		}
@@ -117,11 +121,11 @@ function getSettings(startElement: Element) {
 export default {
 	id: 'copy-to-clipboard',
 	require: toolbar,
-	effect(Prism) {
+	effect (Prism) {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const toolbar = Prism.plugins.toolbar!;
 
-		return toolbar.registerButton('copy-to-clipboard', (env) => {
+		return toolbar.registerButton('copy-to-clipboard', env => {
 			const element = env.element;
 
 			const settings = getSettings(element);
@@ -135,15 +139,15 @@ export default {
 			setState('copy');
 
 			registerClipboard(linkCopy, {
-				getText() {
+				getText () {
 					return element.textContent || '';
 				},
-				success() {
+				success () {
 					setState('copy-success');
 
 					resetText();
 				},
-				error() {
+				error () {
 					setState('copy-error');
 
 					setTimeout(() => {
@@ -151,19 +155,19 @@ export default {
 					}, 1);
 
 					resetText();
-				}
+				},
 			});
 
 			return linkCopy;
 
-			function resetText() {
+			function resetText () {
 				setTimeout(() => setState('copy'), settings['copy-timeout']);
 			}
 
-			function setState(state: 'copy' | 'copy-error' | 'copy-success') {
+			function setState (state: 'copy' | 'copy-error' | 'copy-success') {
 				linkSpan.textContent = settings[state];
 				linkCopy.setAttribute('data-copy-state', state);
 			}
 		});
-	}
+	},
 } as PluginProto<'copy-to-clipboard'>;
