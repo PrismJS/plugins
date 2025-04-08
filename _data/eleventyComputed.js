@@ -1,9 +1,9 @@
-import baseComputed from "prismjs-website/_data/eleventyComputed.js";
+import baseComputed from 'prismjs-website/_data/eleventyComputed.js';
 
 export default {
 	themes: baseComputed.themes,
 	id (data) {
-		let parts = data.page.inputPath.slice(2).split("/");
+		let parts = data.page.inputPath.slice(2).split('/');
 		if (parts.length === 1) {
 			// Root
 			return;
