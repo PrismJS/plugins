@@ -94,6 +94,8 @@ export class FileHighlight {
 	}
 }
 
+// TODO: Remove this once the plugins are ditched from the Prism repo
+// @ts-ignore
 export default {
 	id: 'file-highlight',
 	plugin (Prism) {
