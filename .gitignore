@@ -4,6 +4,7 @@ Thumbs.db
 
 # Generated files
 *.html
+*.js
 *.min.js
 *.min.css
 plugins.json

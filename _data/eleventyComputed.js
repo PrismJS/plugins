@@ -39,7 +39,7 @@ export default {
 			return ret;
 		}
 
-		ret.push(`./prism-${id}.js`);
+		ret.push(`./prism-${id}.js { type="module" }`);
 
 		if (!data.noCSS) {
 			ret.push(`./prism-${id}.css`);
