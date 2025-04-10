@@ -4,7 +4,7 @@ description: Highlights specific lines and/or line ranges.
 owner: LeaVerou
 resources:
   - ../line-numbers/prism-line-numbers.css
-  - ../line-numbers/prism-line-numbers.js
+  - ../line-numbers/prism-line-numbers.js { type="module" }
 ---
 
 <section class="language-markup">

@@ -6,9 +6,11 @@
 	"scripts": {
 		"dependencies": "npm install --prefix node_modules/prismjs-website",
 		"build:html": "npx @11ty/eleventy --config=_build/eleventy.js --quiet",
-		"build": "npm run build:html",
+		"build:plugins": "rollup --config",
+		"build": "npm run build:html && npm run build:plugins",
 		"watch:html": "npx @11ty/eleventy --config=_build/eleventy.js --watch --quiet --incremental",
-		"watch": "npm run watch:html",
+		"watch:plugins": "rollup --config --watch",
+		"watch": "npm run watch:html & npm run watch:plugins",
 		"dev": "netlify dev -p 8844",
 		"serve": "npx @11ty/eleventy --config=_build/eleventy.js --serve --quiet"
 	},
@@ -23,6 +25,9 @@
 	"license": "MIT",
 	"devDependencies": {
 		"@11ty/eleventy": "^3.0.0",
+		"@rollup/plugin-node-resolve": "^16.0.1",
+		"@rollup/plugin-terser": "^0.4.4",
+		"@rollup/plugin-typescript": "^12.1.2",
 		"@types/node": "^22.14.0",
 		"eleventy-plugin-toc": "^1.1.5",
 		"markdown-it-anchor": "^9.2.0",
@@ -32,6 +37,9 @@
 		"prettier-plugin-brace-style": "^0.7.2",
 		"prettier-plugin-merge": "^0.7.3",
 		"prettier-plugin-space-before-function-paren": "^0.0.7",
-		"prismjs-website": "github:PrismJS/website"
+		"prismjs-website": "github:PrismJS/website#v2",
+		"rollup": "^4.39.0",
+		"tslib": "^2.8.1",
+		"typescript": "^5.8.3"
 	}
 }
