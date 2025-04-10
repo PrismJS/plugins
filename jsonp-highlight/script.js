@@ -3,5 +3,5 @@ function dump_json (x) {
 }
 
 Prism.plugins.jsonphighlight.registerAdapter(
-	x => `using registerAdapter: ${JSON.stringify(x, null, 2)}`,
+	x => `using registerAdapter: ${JSON.stringify(x, null, 2)}`
 );

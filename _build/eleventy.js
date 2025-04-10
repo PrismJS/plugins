@@ -1,15 +1,15 @@
-import baseConfig from "prismjs-website/_build/eleventy.js";
+import baseConfig from 'prismjs-website/_build/eleventy.js';
 
 /** @param {import("@11ty/eleventy").UserConfig} config */
 export default config => {
 	let base = baseConfig(config);
 
 	let data = {
-		layout: "plugin.njk",
-		tags: ["plugin"],
+		layout: 'plugin.njk',
+		tags: ['plugin'],
 		// TODO: change to https://prismjs.com when ready
-		base_url: "https://staging.prismjs.com",
-		subdomain: "plugins",
+		base_url: 'https://staging.prismjs.com',
+		subdomain: 'plugins',
 		permalink: `{{ page.filePathStem | replace("README", "index") }}.html`,
 	};
 

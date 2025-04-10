@@ -23,6 +23,7 @@
 	"license": "MIT",
 	"devDependencies": {
 		"@11ty/eleventy": "^3.0.0",
+		"@types/node": "^22.14.0",
 		"eleventy-plugin-toc": "^1.1.5",
 		"markdown-it-anchor": "^9.2.0",
 		"markdown-it-attrs": "^4.3.1",

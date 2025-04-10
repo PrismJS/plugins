@@ -1,6 +1,6 @@
 async function getZip (files, elt) {
 	let process = async () => {
-		elt.setAttribute("data-progress", Math.round((i / l) * 100));
+		elt.setAttribute('data-progress', Math.round((i / l) * 100));
 		if (i < l) {
 			await addFile(zip, files[i][0], files[i][1]);
 			i++;
@@ -30,29 +30,29 @@ async function getFileContents (filepath) {
 	return response.text();
 }
 
-document.querySelector(".download-grammars").addEventListener("click", async ({ target }) => {
+document.querySelector('.download-grammars').addEventListener('click', async ({ target }) => {
 	let btn = target;
-	if (btn.classList.contains("loading")) {
+	if (btn.classList.contains('loading')) {
 		return;
 	}
-	btn.classList.add("loading");
-	btn.setAttribute("data-progress", 0);
+	btn.classList.add('loading');
+	btn.setAttribute('data-progress', 0);
 
 	let files = [];
 	for (let id in components.languages) {
-		if (id === "meta") {
+		if (id === 'meta') {
 			continue;
 		}
 		let basepath =
-			"https://dev.prismjs.com/" + components.languages.meta.path.replace(/\{id}/g, id);
-		let basename = basepath.substring(basepath.lastIndexOf("/") + 1);
-		files.push([basename + ".js", basepath + ".js"]);
-		files.push([basename + ".min.js", basepath + ".min.js"]);
+			'https://dev.prismjs.com/' + components.languages.meta.path.replace(/\{id}/g, id);
+		let basename = basepath.substring(basepath.lastIndexOf('/') + 1);
+		files.push([basename + '.js', basepath + '.js']);
+		files.push([basename + '.min.js', basepath + '.min.js']);
 	}
 
 	let zip = await getZip(files, btn);
-	btn.classList.remove("loading");
+	btn.classList.remove('loading');
 
-	let blob = await zip.generateAsync({ type: "blob" });
-	saveAs(blob, "prism-components.zip");
+	let blob = await zip.generateAsync({ type: 'blob' });
+	saveAs(blob, 'prism-components.zip');
 });

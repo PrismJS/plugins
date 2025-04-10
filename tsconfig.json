@@ -1,0 +1,12 @@
+{
+	"extends": "./node_modules/prismjs-website/node_modules/prismjs/tsconfig.json",
+	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"prismjs/*": ["node_modules/prismjs-website/node_modules/prismjs/*"]
+		},
+		"types": ["node"]
+	},
+	"include": ["./**/*.ts"],
+	"exclude": ["node_modules"]
+}
